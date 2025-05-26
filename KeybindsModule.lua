@@ -24,7 +24,8 @@ function Keybinds.Listen()
     local UserInputService = game:GetService("UserInputService")
     UserInputService.InputBegan:Connect(function(input, processed)
         if processed then return end
-        local cb = Keybinds.Bindings[input.KeyCode.Name:upper()]
+        local keyName = input.KeyCode.Name:upper()
+        local cb = Keybinds.Bindings[keyName]
         if cb then
             cb()
         end
