@@ -1,14 +1,14 @@
 local Keybinds = {}
 
 Keybinds.Bindings = {}
-Keybinds.CurrentKeys = {} -- {Aimbot = "F", ESP = "G", GUI = "RightControl"}
+Keybinds.CurrentKeys = {}
 
 function Keybinds.BindKey(key, callback)
-    Keybinds.Bindings[key] = callback
+    Keybinds.Bindings[key:upper()] = callback
 end
 
 function Keybinds.UnbindKey(key)
-    Keybinds.Bindings[key] = nil
+    Keybinds.Bindings[key:upper()] = nil
 end
 
 function Keybinds.SetKey(name, newKey, callback)
@@ -24,7 +24,7 @@ function Keybinds.Listen()
     local UserInputService = game:GetService("UserInputService")
     UserInputService.InputBegan:Connect(function(input, processed)
         if processed then return end
-        local cb = Keybinds.Bindings[input.KeyCode.Name]
+        local cb = Keybinds.Bindings[input.KeyCode.Name:upper()]
         if cb then
             cb()
         end
