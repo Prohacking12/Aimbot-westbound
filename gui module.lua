@@ -1,6 +1,7 @@
 local GUI = {}
 
 function GUI.Create(LocalPlayer, CombatConfig, VisualConfig, Keybinds, callbacks)
+    local UserInputService = game:GetService("UserInputService")
     local screenGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
     screenGui.Name = "AimbotGUI"
     screenGui.ResetOnSpawn = false
@@ -84,23 +85,6 @@ function GUI.Create(LocalPlayer, CombatConfig, VisualConfig, Keybinds, callbacks
         l.TextXAlignment = Enum.TextXAlignment.Left
         return l
     end
-    local function createTextBox(defaultText, parent, yOffset, onChanged)
-        local tb = Instance.new("TextBox", parent)
-        tb.Size = UDim2.new(0.5, -20, 0, 25)
-        tb.Position = UDim2.new(0.5, 10, 0, yOffset)
-        tb.BackgroundColor3 = Color3.fromRGB(100, 50, 20)
-        tb.TextColor3 = Color3.new(1, 1, 1)
-        tb.Font = Enum.Font.Arcade
-        tb.TextScaled = true
-        tb.Text = tostring(defaultText)
-        tb.ClearTextOnFocus = false
-        if onChanged then
-            tb.FocusLost:Connect(function()
-                onChanged(tb.Text)
-            end)
-        end
-        return tb
-    end
 
     -- Combate
     local aimbotBtn = createButton("Aimbot: " .. (CombatConfig.aimbotEnabled and "ON" or "OFF"), frames["Combate"], 10)
@@ -165,13 +149,31 @@ function GUI.Create(LocalPlayer, CombatConfig, VisualConfig, Keybinds, callbacks
 
     -- Configuración
     createLabel("Distancia Jugadores:", frames["Configuración"], 10)
-    local playerDistBox = createTextBox(CombatConfig.playerMaxDistance, frames["Configuración"], 10, function(val)
-        CombatConfig.playerMaxDistance = tonumber(val) or CombatConfig.playerMaxDistance
+    local playerDistBox = Instance.new("TextBox", frames["Configuración"])
+    playerDistBox.Size = UDim2.new(0.5, -20, 0, 25)
+    playerDistBox.Position = UDim2.new(0.5, 10, 0, 10)
+    playerDistBox.BackgroundColor3 = Color3.fromRGB(100, 50, 20)
+    playerDistBox.TextColor3 = Color3.new(1, 1, 1)
+    playerDistBox.Font = Enum.Font.Arcade
+    playerDistBox.TextScaled = true
+    playerDistBox.Text = tostring(CombatConfig.playerMaxDistance)
+    playerDistBox.ClearTextOnFocus = false
+    playerDistBox.FocusLost:Connect(function()
+        CombatConfig.playerMaxDistance = tonumber(playerDistBox.Text) or CombatConfig.playerMaxDistance
     end)
 
     createLabel("Distancia Animales:", frames["Configuración"], 40)
-    local animalDistBox = createTextBox(CombatConfig.animalMaxDistance, frames["Configuración"], 40, function(val)
-        CombatConfig.animalMaxDistance = tonumber(val) or CombatConfig.animalMaxDistance
+    local animalDistBox = Instance.new("TextBox", frames["Configuración"])
+    animalDistBox.Size = UDim2.new(0.5, -20, 0, 25)
+    animalDistBox.Position = UDim2.new(0.5, 10, 0, 40)
+    animalDistBox.BackgroundColor3 = Color3.fromRGB(100, 50, 20)
+    animalDistBox.TextColor3 = Color3.new(1, 1, 1)
+    animalDistBox.Font = Enum.Font.Arcade
+    animalDistBox.TextScaled = true
+    animalDistBox.Text = tostring(CombatConfig.animalMaxDistance)
+    animalDistBox.ClearTextOnFocus = false
+    animalDistBox.FocusLost:Connect(function()
+        CombatConfig.animalMaxDistance = tonumber(animalDistBox.Text) or CombatConfig.animalMaxDistance
     end)
 
     local autoHealBtn = createButton("Auto Heal: " .. (CombatConfig.autoHealEnabled and "ON" or "OFF"), frames["Configuración"], 70)
@@ -180,22 +182,48 @@ function GUI.Create(LocalPlayer, CombatConfig, VisualConfig, Keybinds, callbacks
         autoHealBtn.Text = "Auto Heal: " .. (CombatConfig.autoHealEnabled and "ON" or "OFF")
     end)
 
-    createLabel("Tecla Aimbot:", frames["Configuración"], 110)
-    local aimbotKeyBox = createTextBox(Keybinds.CurrentKeys["Aimbot"] or "F", frames["Configuración"], 110, function(newKey)
+    -- Keybinds: selección por botón
+    local waitingForKey = nil
+
+    local function createKeybindButton(labelText, keyName, yOffset, setCallback)
+        createLabel(labelText, frames["Configuración"], yOffset)
+        local btn = Instance.new("TextButton", frames["Configuración"])
+        btn.Size = UDim2.new(0.5, -20, 0, 25)
+        btn.Position = UDim2.new(0.5, 10, 0, yOffset)
+        btn.BackgroundColor3 = Color3.fromRGB(100, 50, 20)
+        btn.TextColor3 = Color3.new(1, 1, 1)
+        btn.Font = Enum.Font.Arcade
+        btn.TextScaled = true
+        btn.Text = Keybinds.CurrentKeys[keyName] or "..."
+        btn.MouseButton1Click:Connect(function()
+            btn.Text = "Presiona una tecla..."
+            waitingForKey = function(input)
+                local k = input.KeyCode.Name:upper()
+                btn.Text = k
+                setCallback(k)
+                waitingForKey = nil
+            end
+        end)
+        return btn
+    end
+
+    UserInputService.InputBegan:Connect(function(input, processed)
+        if waitingForKey and not processed and input.UserInputType == Enum.UserInputType.Keyboard then
+            waitingForKey(input)
+        end
+    end)
+
+    createKeybindButton("Tecla Aimbot:", "Aimbot", 110, function(newKey)
         if callbacks and callbacks.setAimbotKey then
-            callbacks.setAimbotKey(newKey:upper())
+            callbacks.setAimbotKey(newKey)
         end
     end)
-
-    createLabel("Tecla ESP:", frames["Configuración"], 140)
-    local espKeyBox = createTextBox(Keybinds.CurrentKeys["ESP"] or "G", frames["Configuración"], 140, function(newKey)
+    createKeybindButton("Tecla ESP:", "ESP", 140, function(newKey)
         if callbacks and callbacks.setESPKey then
-            callbacks.setESPKey(newKey:upper())
+            callbacks.setESPKey(newKey)
         end
     end)
-
-    createLabel("Tecla GUI:", frames["Configuración"], 170)
-    local guiKeyBox = createTextBox(Keybinds.CurrentKeys["GUI"] or "RightControl", frames["Configuración"], 170, function(newKey)
+    createKeybindButton("Tecla GUI:", "GUI", 170, function(newKey)
         if callbacks and callbacks.setGUIKey then
             callbacks.setGUIKey(newKey)
         end
