@@ -1,10 +1,11 @@
+-- KeybindsModule.lua
 local Keybinds = {}
 local binds = {}
 local waitingForInput = false
 local currentRebindCallback = nil
 
 function Keybinds.init(sharedState)
-    
+    -- No necesita inicialización especial
 end
 
 function Keybinds.bind(key, callback)
@@ -26,21 +27,13 @@ game:GetService("UserInputService").InputBegan:Connect(function(input, gameProce
     
     if waitingForInput then
         if input.UserInputType == Enum.UserInputType.Keyboard then
-            if currentRebindCallback then
-                currentRebindCallback(input.KeyCode)
-            end
+            currentRebindCallback(input.KeyCode)
         elseif input.UserInputType == Enum.UserInputType.MouseButton1 then
-            if currentRebindCallback then
-                currentRebindCallback(Enum.KeyCode.MouseButton1)
-            end
+            currentRebindCallback(Enum.KeyCode.MouseButton1)
         elseif input.UserInputType == Enum.UserInputType.MouseButton2 then
-            if currentRebindCallback then
-                currentRebindCallback(Enum.KeyCode.MouseButton2)
-            end
+            currentRebindCallback(Enum.KeyCode.MouseButton2)
         elseif input.UserInputType == Enum.UserInputType.MouseButton3 then
-            if currentRebindCallback then
-                currentRebindCallback(Enum.KeyCode.MouseButton3)
-            end
+            currentRebindCallback(Enum.KeyCode.MouseButton3)
         end
         waitingForInput = false
         currentRebindCallback = nil
