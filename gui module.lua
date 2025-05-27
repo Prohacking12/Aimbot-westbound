@@ -1,3 +1,4 @@
+-- gui module.lua
 local UI = {}
 local shared
 local screenGui, mainFrame
@@ -14,19 +15,19 @@ function UI.toggleGUI()
 end
 
 function UI.updateButtons()
-    -- Actualiza los botones según la configuración
-end
-
-function UI.updateLockButton(locked)
-    -- Actualiza el botón de lock
+    -- Esta función actualizará todos los botones según la configuración actual
+    -- La implementaremos después de crear los botones
 end
 
 function UI.createGUI()
     if screenGui then screenGui:Destroy() end
+    
+    -- Crear la GUI principal
     screenGui = Instance.new("ScreenGui", shared.LocalPlayer:WaitForChild("PlayerGui"))
     screenGui.Name = "AimbotGUI"
     screenGui.ResetOnSpawn = false
 
+    -- Botón de toggle
     local toggleGuiButton = Instance.new("TextButton", screenGui)
     toggleGuiButton.Size = UDim2.new(0, 40, 0, 40)
     toggleGuiButton.Position = UDim2.new(1, -50, 0, 10)
@@ -37,6 +38,7 @@ function UI.createGUI()
     toggleGuiButton.TextScaled = true
     toggleGuiButton.MouseButton1Click:Connect(UI.toggleGUI)
 
+    -- Marco principal
     mainFrame = Instance.new("Frame", screenGui)
     mainFrame.Size = UDim2.new(0, 380, 0, 300)
     mainFrame.Position = UDim2.new(0.5, -190, 0.5, -150)
@@ -46,6 +48,7 @@ function UI.createGUI()
     mainFrame.Active = true
     mainFrame.Draggable = true
 
+    -- Título
     local title = Instance.new("TextLabel", mainFrame)
     title.Size = UDim2.new(1, 0, 0, 30)
     title.BackgroundColor3 = Color3.fromRGB(60, 30, 20)
@@ -73,23 +76,29 @@ function UI.createGUI()
         tabButtons[tabName] = tabButton
     end
 
-    -- Frames de pestañas
-    combatFrame = Instance.new("Frame", mainFrame)
+    -- Frames de contenido
+    combatFrame = Instance.new("ScrollingFrame", mainFrame)
     combatFrame.Size = UDim2.new(1, -10, 1, -70)
     combatFrame.Position = UDim2.new(0, 5, 0, 65)
     combatFrame.BackgroundTransparency = 1
+    combatFrame.ScrollBarThickness = 5
+    combatFrame.CanvasSize = UDim2.new(0, 0, 2, 0) -- Permite scroll
     combatFrame.Visible = true
 
-    visualFrame = Instance.new("Frame", mainFrame)
+    visualFrame = Instance.new("ScrollingFrame", mainFrame)
     visualFrame.Size = UDim2.new(1, -10, 1, -70)
     visualFrame.Position = UDim2.new(0, 5, 0, 65)
     visualFrame.BackgroundTransparency = 1
+    visualFrame.ScrollBarThickness = 5
+    visualFrame.CanvasSize = UDim2.new(0, 0, 1.5, 0)
     visualFrame.Visible = false
 
-    configFrame = Instance.new("Frame", mainFrame)
+    configFrame = Instance.new("ScrollingFrame", mainFrame)
     configFrame.Size = UDim2.new(1, -10, 1, -70)
     configFrame.Position = UDim2.new(0, 5, 0, 65)
     configFrame.BackgroundTransparency = 1
+    configFrame.ScrollBarThickness = 5
+    configFrame.CanvasSize = UDim2.new(0, 0, 2, 0)
     configFrame.Visible = false
 
     -- Función para cambiar pestañas
@@ -102,32 +111,160 @@ function UI.createGUI()
         end
     end
 
+    -- Conectar botones de pestañas
     for name, button in pairs(tabButtons) do
         button.MouseButton1Click:Connect(function()
             switchTab(name)
         end)
     end
 
+    -- Crear todos los botones necesarios
+    local yOffset = 10
+    local buttonHeight = 30
+    local buttonSpacing = 5
+
     -- Botones de Combate
-    local toggleButton = UI.createButton("Aimbot: " .. (shared.config.aimbotEnabled and "ON" or "OFF"), combatFrame, 10)
-    toggleButton.MouseButton1Click:Connect(function()
+    UI.createButton("Aimbot: "..(shared.config.aimbotEnabled and "ON" or "OFF"), combatFrame, yOffset, function()
         shared.config.aimbotEnabled = not shared.config.aimbotEnabled
-        toggleButton.Text = "Aimbot: " .. (shared.config.aimbotEnabled and "ON" or "OFF")
+        UI.updateButtons()
+    end)
+    yOffset = yOffset + buttonHeight + buttonSpacing
+
+    UI.createButton("Equipo: "..shared.config.targetTeamName, combatFrame, yOffset, function()
+        shared.config.targetTeamName = (shared.config.targetTeamName == "Outlaws") and "Cowboys" or "Outlaws"
+        UI.updateButtons()
+    end)
+    yOffset = yOffset + buttonHeight + buttonSpacing
+
+    UI.createButton("Parte: "..(shared.config.aimAtChest and "Pecho" or "Cabeza"), combatFrame, yOffset, function()
+        shared.config.aimAtChest = not shared.config.aimAtChest
+        UI.updateButtons()
+    end)
+    yOffset = yOffset + buttonHeight + buttonSpacing
+
+    UI.createButton("Animales: "..(shared.config.animalAimbotEnabled and "ON" or "OFF"), combatFrame, yOffset, function()
+        shared.config.animalAimbotEnabled = not shared.config.animalAimbotEnabled
+        UI.updateButtons()
+    end)
+    yOffset = yOffset + buttonHeight + buttonSpacing
+
+    UI.createButton("Lock: OFF", combatFrame, yOffset, function()
+        if shared.Combat.lockClosestTarget then
+            shared.Combat.lockClosestTarget()
+            UI.updateButtons()
+        end
+    end)
+    yOffset = yOffset + buttonHeight + buttonSpacing
+
+    UI.createButton("ACTIVAR KILL AURA", combatFrame, yOffset, function()
+        if shared.Combat.activateKillAura then
+            shared.Combat.activateKillAura()
+        end
     end)
 
-    -- ... (resto de la interfaz como en tu código original)
+    -- Botones Visuales
+    yOffset = 10
+    UI.createButton("Fullbright: "..(shared.config.fullbrightEnabled and "ON" or "OFF"), visualFrame, yOffset, function()
+        shared.config.fullbrightEnabled = not shared.config.fullbrightEnabled
+        if shared.Visual.toggleFullbright then
+            shared.Visual.toggleFullbright(shared.config.fullbrightEnabled)
+        end
+        UI.updateButtons()
+    end)
+    yOffset = yOffset + buttonHeight + buttonSpacing
+
+    UI.createButton("X-Ray: "..(shared.config.xrayEnabled and "ON" or "OFF"), visualFrame, yOffset, function()
+        shared.config.xrayEnabled = not shared.config.xrayEnabled
+        if shared.Visual.toggleXray then
+            shared.Visual.toggleXray(shared.config.xrayEnabled)
+        end
+        UI.updateButtons()
+    end)
+    yOffset = yOffset + buttonHeight + buttonSpacing
+
+    UI.createButton("ESP: "..(shared.config.espEnabled and "ON" or "OFF"), visualFrame, yOffset, function()
+        shared.config.espEnabled = not shared.config.espEnabled
+        if shared.Visual.toggleESP then
+            shared.Visual.toggleESP(shared.config.espEnabled)
+        end
+        UI.updateButtons()
+    end)
+
+    -- Configuración
+    yOffset = 10
+    UI.createLabel("Distancia Jugadores:", configFrame, yOffset)
+    local playerDistInput = UI.createTextBox(shared.config.playerMaxDistance, configFrame, yOffset)
+    playerDistInput.FocusLost:Connect(function()
+        local val = tonumber(playerDistInput.Text)
+        if val and val > 0 then
+            shared.config.playerMaxDistance = val
+        else
+            playerDistInput.Text = tostring(shared.config.playerMaxDistance)
+        end
+    end)
+    yOffset = yOffset + buttonHeight + buttonSpacing
+
+    UI.createLabel("Distancia Animales:", configFrame, yOffset)
+    local animalDistInput = UI.createTextBox(shared.config.animalMaxDistance, configFrame, yOffset)
+    animalDistInput.FocusLost:Connect(function()
+        local val = tonumber(animalDistInput.Text)
+        if val and val > 0 then
+            shared.config.animalMaxDistance = val
+        else
+            animalDistInput.Text = tostring(shared.config.animalMaxDistance)
+        end
+    end)
+    yOffset = yOffset + buttonHeight + buttonSpacing
+
+    UI.createButton("AutoHeal: "..(shared.config.autoHealEnabled and "ON" or "OFF"), configFrame, yOffset, function()
+        shared.config.autoHealEnabled = not shared.config.autoHealEnabled
+        UI.updateButtons()
+    end)
+
+    -- Seleccionar pestaña inicial
+    switchTab("Combate")
 end
 
-function UI.createButton(text, parent, yOffset, xOffset)
+-- Función para crear botones
+function UI.createButton(text, parent, yOffset, callback)
     local button = Instance.new("TextButton", parent)
-    button.Size = UDim2.new(0, 160, 0, 30)
-    button.Position = UDim2.new(0, xOffset or 10, 0, yOffset)
+    button.Size = UDim2.new(0.9, 0, 0, 30)
+    button.Position = UDim2.new(0.05, 0, 0, yOffset)
     button.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
     button.TextColor3 = Color3.new(1, 1, 1)
     button.Font = Enum.Font.Arcade
     button.TextScaled = true
     button.Text = text
+    button.MouseButton1Click:Connect(callback)
     return button
+end
+
+-- Función para crear labels
+function UI.createLabel(text, parent, yOffset)
+    local label = Instance.new("TextLabel", parent)
+    label.Size = UDim2.new(0.4, 0, 0, 25)
+    label.Position = UDim2.new(0.05, 0, 0, yOffset)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.new(1, 1, 1)
+    label.Font = Enum.Font.Arcade
+    label.TextScaled = true
+    label.Text = text
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    return label
+end
+
+-- Función para crear textboxes
+function UI.createTextBox(defaultText, parent, yOffset)
+    local textBox = Instance.new("TextBox", parent)
+    textBox.Size = UDim2.new(0.4, 0, 0, 25)
+    textBox.Position = UDim2.new(0.5, 0, 0, yOffset)
+    textBox.BackgroundColor3 = Color3.fromRGB(100, 50, 20)
+    textBox.TextColor3 = Color3.new(1, 1, 1)
+    textBox.Font = Enum.Font.Arcade
+    textBox.TextScaled = true
+    textBox.Text = tostring(defaultText)
+    textBox.ClearTextOnFocus = false
+    return textBox
 end
 
 return UI
