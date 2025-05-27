@@ -101,7 +101,7 @@ function GUI.create(Aimbot, Visual, ESP)
         return tb
     end
 
-    -- Primera columna
+    
     local toggleButton = createButton("Aimbot: ON", combatFrame, 10, 10)
     local switchButton = createButton("Equipo: " .. (Aimbot.targetTeamName or "Outlaws"), combatFrame, 50, 10)
     local aimPartButton = createButton("Parte: Cabeza", combatFrame, 90, 10)
@@ -109,19 +109,19 @@ function GUI.create(Aimbot, Visual, ESP)
     local lockOnButton = createButton("Lock: OFF", combatFrame, 170, 10)
     local killAuraButton = createButton("ACTIVAR KILL AURA", combatFrame, 210, 10)
 
-    -- Segunda columna (FastHeal y distancias)
+    
     local autoHealButton = createButton("FastHeal: " .. (Aimbot.autoHealEnabled and "ON" or "OFF"), combatFrame, 10, 210)
     createLabel("Dist Jugadores:", combatFrame, 50, 210)
     local playerDistanceInput = createTextBox(Aimbot.playerMaxDistance, combatFrame, 50, 330)
     createLabel("Dist Animales:", combatFrame, 90, 210)
     local animalDistanceInput = createTextBox(Aimbot.animalMaxDistance, combatFrame, 90, 330)
 
-    -- Visual
+    
     local fullbrightButton = createButton("Fullbright: OFF", visualFrame, 10)
     local xrayButton = createButton("X-Ray: OFF", visualFrame, 50)
     local espButton = createButton("ESP: OFF", visualFrame, 90)
 
-    -- Conectar botones
+    
     toggleButton.MouseButton1Click:Connect(function()
         if Aimbot.toggleAimbot then Aimbot.toggleAimbot() end
         toggleButton.Text = "Aimbot: " .. (Aimbot.aimbotEnabled and "ON" or "OFF")
@@ -165,7 +165,7 @@ function GUI.create(Aimbot, Visual, ESP)
         end
     end)
 
-    -- Visual
+    
     fullbrightButton.MouseButton1Click:Connect(function()
         if Visual.toggleFullbright then Visual.toggleFullbright() end
         fullbrightButton.Text = Visual.fullbrightEnabled and "Fullbright: ON" or "Fullbright: OFF"
@@ -179,7 +179,7 @@ function GUI.create(Aimbot, Visual, ESP)
         espButton.Text = ESP.espEnabled and "ESP: ON" or "ESP: OFF"
     end)
 
-    -- Tabs
+    
     local function switchTab(tabName)
         combatFrame.Visible = (tabName == "Combate")
         visualFrame.Visible = (tabName == "Visual")
