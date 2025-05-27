@@ -18,8 +18,8 @@ function GUI.create(Aimbot, Visual, ESP)
     toggleGuiButton.TextScaled = true
 
     local mainFrame = Instance.new("Frame", screenGui)
-    mainFrame.Size = UDim2.new(0, 380, 0, 300)
-    mainFrame.Position = UDim2.new(0.5, -190, 0.5, -150)
+    mainFrame.Size = UDim2.new(0, 400, 0, 340)
+    mainFrame.Position = UDim2.new(0.5, -200, 0.5, -170)
     mainFrame.BackgroundColor3 = Color3.fromRGB(40, 20, 10)
     mainFrame.BorderSizePixel = 2
     mainFrame.Visible = true
@@ -34,7 +34,7 @@ function GUI.create(Aimbot, Visual, ESP)
     title.Font = Enum.Font.Arcade
     title.TextScaled = true
 
-    local tabs = {"Combate", "Visual", "Configuración"}
+    local tabs = {"Combate", "Visual"}
     local tabContainer = Instance.new("Frame", mainFrame)
     tabContainer.Size = UDim2.new(1, 0, 0, 30)
     tabContainer.Position = UDim2.new(0, 0, 0, 30)
@@ -64,12 +64,6 @@ function GUI.create(Aimbot, Visual, ESP)
     visualFrame.Position = UDim2.new(0, 5, 0, 65)
     visualFrame.BackgroundTransparency = 1
     visualFrame.Visible = false
-
-    local configFrame = Instance.new("Frame", mainFrame)
-    configFrame.Size = UDim2.new(1, -10, 1, -70)
-    configFrame.Position = UDim2.new(0, 5, 0, 65)
-    configFrame.BackgroundTransparency = 1
-    configFrame.Visible = false
 
     -- Helpers
     local function createButton(text, parent, yOffset, xOffset)
@@ -116,6 +110,19 @@ function GUI.create(Aimbot, Visual, ESP)
     local lockOnButton = createButton("Lock: OFF", combatFrame, 150)
     local killAuraButton = createButton("ACTIVAR KILL AURA", combatFrame, 185, 10)
 
+    local yBase = 225
+    createLabel("Distancia Jugadores:", combatFrame, yBase)
+    local playerDistanceInput = createTextBox(Aimbot.playerMaxDistance, combatFrame, yBase)
+    createLabel("Distancia Animales:", combatFrame, yBase+30)
+    local animalDistanceInput = createTextBox(Aimbot.animalMaxDistance, combatFrame, yBase+30)
+    local autoHealButton = createButton("FastHeal: " .. (Aimbot.autoHealEnabled and "ON" or "OFF"), combatFrame, yBase+60, 10)
+
+    -- Visual
+    local fullbrightButton = createButton("Fullbright: OFF", visualFrame, 10)
+    local xrayButton = createButton("X-Ray: OFF", visualFrame, 45)
+    local espButton = createButton("ESP: OFF", visualFrame, 80)
+
+    -- Botón/inputs Combate
     toggleButton.MouseButton1Click:Connect(function()
         if Aimbot.toggleAimbot then Aimbot.toggleAimbot() end
         toggleButton.Text = "Aimbot: " .. (Aimbot.aimbotEnabled and "ON" or "OFF")
@@ -140,32 +147,6 @@ function GUI.create(Aimbot, Visual, ESP)
     killAuraButton.MouseButton1Click:Connect(function()
         if Aimbot.activateKillAura then Aimbot.activateKillAura() end
     end)
-
-    -- Visual
-    local fullbrightButton = createButton("Fullbright: OFF", visualFrame, 10)
-    local xrayButton = createButton("X-Ray: OFF", visualFrame, 45)
-    local espButton = createButton("ESP: OFF", visualFrame, 80)
-
-    fullbrightButton.MouseButton1Click:Connect(function()
-        if Visual.toggleFullbright then Visual.toggleFullbright() end
-        fullbrightButton.Text = Visual.fullbrightEnabled and "Fullbright: ON" or "Fullbright: OFF"
-    end)
-    xrayButton.MouseButton1Click:Connect(function()
-        if Visual.toggleXray then Visual.toggleXray() end
-        xrayButton.Text = Visual.xrayEnabled and "X-Ray: ON" or "X-Ray: OFF"
-    end)
-    espButton.MouseButton1Click:Connect(function()
-        if ESP.toggleESP then ESP.toggleESP() end
-        espButton.Text = ESP.espEnabled and "ESP: ON" or "ESP: OFF"
-    end)
-
-    -- Configuración
-    createLabel("Distancia Jugadores:", configFrame, 10)
-    local playerDistanceInput = createTextBox(Aimbot.playerMaxDistance, configFrame, 10)
-    createLabel("Distancia Animales:", configFrame, 40)
-    local animalDistanceInput = createTextBox(Aimbot.animalMaxDistance, configFrame, 40)
-    local autoHealButton = createButton("FastHeal: " .. (Aimbot.autoHealEnabled and "ON" or "OFF"), configFrame, 70)
-
     playerDistanceInput.FocusLost:Connect(function()
         local val = tonumber(playerDistanceInput.Text)
         if val then
@@ -185,11 +166,24 @@ function GUI.create(Aimbot, Visual, ESP)
         end
     end)
 
+    -- Visual
+    fullbrightButton.MouseButton1Click:Connect(function()
+        if Visual.toggleFullbright then Visual.toggleFullbright() end
+        fullbrightButton.Text = Visual.fullbrightEnabled and "Fullbright: ON" or "Fullbright: OFF"
+    end)
+    xrayButton.MouseButton1Click:Connect(function()
+        if Visual.toggleXray then Visual.toggleXray() end
+        xrayButton.Text = Visual.xrayEnabled and "X-Ray: ON" or "X-Ray: OFF"
+    end)
+    espButton.MouseButton1Click:Connect(function()
+        if ESP.toggleESP then ESP.toggleESP() end
+        espButton.Text = ESP.espEnabled and "ESP: ON" or "ESP: OFF"
+    end)
+
     -- Tabs
     local function switchTab(tabName)
         combatFrame.Visible = (tabName == "Combate")
         visualFrame.Visible = (tabName == "Visual")
-        configFrame.Visible = (tabName == "Configuración")
         for name, button in pairs(tabButtons) do
             button.BackgroundColor3 = (name == tabName) and Color3.fromRGB(120, 60, 30) or Color3.fromRGB(80, 40, 20)
         end
