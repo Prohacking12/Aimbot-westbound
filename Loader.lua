@@ -7,8 +7,8 @@ local function requireModule(name)
     return f()
 end
 
-local combat   = requireModule("combat")
 local visuals  = requireModule("visuals")
+local combat   = requireModule("combat")
 local gui      = requireModule("gui")
 local keybinds = requireModule("keybinds")
 
