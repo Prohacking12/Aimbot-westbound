@@ -18,8 +18,8 @@ function GUI.create(Aimbot, Visual, ESP)
     toggleGuiButton.TextScaled = true
 
     local mainFrame = Instance.new("Frame", screenGui)
-    mainFrame.Size = UDim2.new(0, 400, 0, 340)
-    mainFrame.Position = UDim2.new(0.5, -200, 0.5, -170)
+    mainFrame.Size = UDim2.new(0, 420, 0, 340)
+    mainFrame.Position = UDim2.new(0.5, -210, 0.5, -170)
     mainFrame.BackgroundColor3 = Color3.fromRGB(40, 20, 10)
     mainFrame.BorderSizePixel = 2
     mainFrame.Visible = true
@@ -65,10 +65,9 @@ function GUI.create(Aimbot, Visual, ESP)
     visualFrame.BackgroundTransparency = 1
     visualFrame.Visible = false
 
-    -- Helpers
     local function createButton(text, parent, yOffset, xOffset)
         local b = Instance.new("TextButton", parent)
-        b.Size = UDim2.new(0, 160, 0, 30)
+        b.Size = UDim2.new(0, 180, 0, 30)
         b.Position = UDim2.new(0, xOffset or 10, 0, yOffset)
         b.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
         b.TextColor3 = Color3.new(1, 1, 1)
@@ -77,10 +76,10 @@ function GUI.create(Aimbot, Visual, ESP)
         b.Text = text
         return b
     end
-    local function createLabel(text, parent, yOffset)
+    local function createLabel(text, parent, yOffset, xOffset)
         local l = Instance.new("TextLabel", parent)
-        l.Size = UDim2.new(0.5, -10, 0, 25)
-        l.Position = UDim2.new(0, 10, 0, yOffset)
+        l.Size = UDim2.new(0, 120, 0, 25)
+        l.Position = UDim2.new(0, xOffset or 10, 0, yOffset)
         l.BackgroundTransparency = 1
         l.TextColor3 = Color3.new(1, 1, 1)
         l.Font = Enum.Font.Arcade
@@ -89,10 +88,10 @@ function GUI.create(Aimbot, Visual, ESP)
         l.TextXAlignment = Enum.TextXAlignment.Left
         return l
     end
-    local function createTextBox(defaultText, parent, yOffset)
+    local function createTextBox(defaultText, parent, yOffset, xOffset)
         local tb = Instance.new("TextBox", parent)
-        tb.Size = UDim2.new(0.5, -20, 0, 25)
-        tb.Position = UDim2.new(0.5, 10, 0, yOffset)
+        tb.Size = UDim2.new(0, 60, 0, 25)
+        tb.Position = UDim2.new(0, xOffset or 140, 0, yOffset)
         tb.BackgroundColor3 = Color3.fromRGB(100, 50, 20)
         tb.TextColor3 = Color3.new(1, 1, 1)
         tb.Font = Enum.Font.Arcade
@@ -102,30 +101,36 @@ function GUI.create(Aimbot, Visual, ESP)
         return tb
     end
 
-    -- Combate
-    local toggleButton = createButton("Aimbot: ON", combatFrame, 10)
-    local switchButton = createButton("Equipo: " .. (Aimbot.targetTeamName or "Outlaws"), combatFrame, 45)
-    local aimPartButton = createButton("Parte: Cabeza", combatFrame, 80)
-    local animalButton = createButton("Animales: ON", combatFrame, 115)
-    local lockOnButton = createButton("Lock: OFF", combatFrame, 150)
-    local killAuraButton = createButton("ACTIVAR KILL AURA", combatFrame, 185, 10)
+    -- Primera columna
+    local toggleButton = createButton("Aimbot: ON", combatFrame, 10, 10)
+    local switchButton = createButton("Equipo: " .. (Aimbot.targetTeamName or "Outlaws"), combatFrame, 50, 10)
+    local aimPartButton = createButton("Parte: Cabeza", combatFrame, 90, 10)
+    local animalButton = createButton("Animales: ON", combatFrame, 130, 10)
+    local lockOnButton = createButton("Lock: OFF", combatFrame, 170, 10)
+    local killAuraButton = createButton("ACTIVAR KILL AURA", combatFrame, 210, 10)
 
-    local yBase = 225
-    createLabel("Distancia Jugadores:", combatFrame, yBase)
-    local playerDistanceInput = createTextBox(Aimbot.playerMaxDistance, combatFrame, yBase)
-    createLabel("Distancia Animales:", combatFrame, yBase+30)
-    local animalDistanceInput = createTextBox(Aimbot.animalMaxDistance, combatFrame, yBase+30)
-    local autoHealButton = createButton("FastHeal: " .. (Aimbot.autoHealEnabled and "ON" or "OFF"), combatFrame, yBase+60, 10)
+    -- Segunda columna (FastHeal y distancias)
+    local autoHealButton = createButton("FastHeal: " .. (Aimbot.autoHealEnabled and "ON" or "OFF"), combatFrame, 10, 210)
+    createLabel("Dist Jugadores:", combatFrame, 50, 210)
+    local playerDistanceInput = createTextBox(Aimbot.playerMaxDistance, combatFrame, 50, 330)
+    createLabel("Dist Animales:", combatFrame, 90, 210)
+    local animalDistanceInput = createTextBox(Aimbot.animalMaxDistance, combatFrame, 90, 330)
 
     -- Visual
     local fullbrightButton = createButton("Fullbright: OFF", visualFrame, 10)
-    local xrayButton = createButton("X-Ray: OFF", visualFrame, 45)
-    local espButton = createButton("ESP: OFF", visualFrame, 80)
+    local xrayButton = createButton("X-Ray: OFF", visualFrame, 50)
+    local espButton = createButton("ESP: OFF", visualFrame, 90)
 
-    -- Botón/inputs Combate
+    -- Conectar botones
     toggleButton.MouseButton1Click:Connect(function()
         if Aimbot.toggleAimbot then Aimbot.toggleAimbot() end
         toggleButton.Text = "Aimbot: " .. (Aimbot.aimbotEnabled and "ON" or "OFF")
+    end)
+    autoHealButton.MouseButton1Click:Connect(function()
+        if Aimbot.toggleAutoHeal then
+            Aimbot.toggleAutoHeal()
+            autoHealButton.Text = "FastHeal: " .. (Aimbot.autoHealEnabled and "ON" or "OFF")
+        end
     end)
     switchButton.MouseButton1Click:Connect(function()
         if Aimbot.toggleTeam then Aimbot.toggleTeam() end
@@ -157,12 +162,6 @@ function GUI.create(Aimbot, Visual, ESP)
         local val = tonumber(animalDistanceInput.Text)
         if val then
             Aimbot.animalMaxDistance = val
-        end
-    end)
-    autoHealButton.MouseButton1Click:Connect(function()
-        if Aimbot.toggleAutoHeal then
-            Aimbot.toggleAutoHeal()
-            autoHealButton.Text = "FastHeal: " .. (Aimbot.autoHealEnabled and "ON" or "OFF")
         end
     end)
 
