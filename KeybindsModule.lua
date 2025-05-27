@@ -1,35 +1,22 @@
 local Keybinds = {}
+local binds = {}
 
-Keybinds.Bindings = {}
-Keybinds.CurrentKeys = {}
-
-function Keybinds.BindKey(key, callback)
-    Keybinds.Bindings[key:upper()] = callback
+function Keybinds.init(sharedState)
+    -- No necesita inicialización especial
 end
 
-function Keybinds.UnbindKey(key)
-    Keybinds.Bindings[key:upper()] = nil
+function Keybinds.bind(key, callback)
+    binds[key] = callback
 end
 
-function Keybinds.SetKey(name, newKey, callback)
-    local oldKey = Keybinds.CurrentKeys[name]
-    if oldKey then
-        Keybinds.UnbindKey(oldKey)
-    end
-    Keybinds.CurrentKeys[name] = newKey
-    Keybinds.BindKey(newKey, callback)
-end
-
-function Keybinds.Listen()
-    local UserInputService = game:GetService("UserInputService")
-    UserInputService.InputBegan:Connect(function(input, processed)
-        if processed then return end
-        local keyName = input.KeyCode.Name:upper()
-        local cb = Keybinds.Bindings[keyName]
-        if cb then
-            cb()
+game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    
+    for key, callback in pairs(binds) do
+        if input.KeyCode == key then
+            callback()
         end
-    end)
-end
+    end
+end)
 
 return Keybinds
