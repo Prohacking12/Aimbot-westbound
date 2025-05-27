@@ -26,13 +26,21 @@ game:GetService("UserInputService").InputBegan:Connect(function(input, gameProce
     
     if waitingForInput then
         if input.UserInputType == Enum.UserInputType.Keyboard then
-            currentRebindCallback(input.KeyCode)
+            if currentRebindCallback then
+                currentRebindCallback(input.KeyCode)
+            end
         elseif input.UserInputType == Enum.UserInputType.MouseButton1 then
-            currentRebindCallback(Enum.KeyCode.MouseButton1)
+            if currentRebindCallback then
+                currentRebindCallback(Enum.KeyCode.MouseButton1)
+            end
         elseif input.UserInputType == Enum.UserInputType.MouseButton2 then
-            currentRebindCallback(Enum.KeyCode.MouseButton2)
+            if currentRebindCallback then
+                currentRebindCallback(Enum.KeyCode.MouseButton2)
+            end
         elseif input.UserInputType == Enum.UserInputType.MouseButton3 then
-            currentRebindCallback(Enum.KeyCode.MouseButton3)
+            if currentRebindCallback then
+                currentRebindCallback(Enum.KeyCode.MouseButton3)
+            end
         end
         waitingForInput = false
         currentRebindCallback = nil
