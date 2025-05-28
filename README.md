@@ -1,4 +1,4 @@
-# 🚀 Homelander Script - Westbound Modular
+# 🚀 Compound v script - Westbound Modular
 
 **¡Bienvenido a la revolución  de Roblox Westbound!**  
 Este repositorio te ofrece un sistema avanzado de scripts para aimbot, ESP, autoheal, visuales, kill aura y mucho más, TODO configurable desde una GUI.
