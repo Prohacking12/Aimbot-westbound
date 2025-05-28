@@ -29,7 +29,7 @@ function GUI.create(Aimbot, Visual, ESP)
     local title = Instance.new("TextLabel", mainFrame)
     title.Size = UDim2.new(1, 0, 0, 30)
     title.BackgroundColor3 = Color3.fromRGB(60, 30, 20)
-    title.Text = "Homelander Script"
+    title.Text = "compound V hub"
     title.TextColor3 = Color3.fromRGB(255, 0, 0)
     title.Font = Enum.Font.Arcade
     title.TextScaled = true
