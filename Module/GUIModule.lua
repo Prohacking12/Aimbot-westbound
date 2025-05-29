@@ -33,7 +33,6 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
     title.Font = Enum.Font.Arcade
     title.TextScaled = true
 
-    -- Ahora incluye "Misc"
     local tabs = {"Combate", "Visual", "Misc"}
     local tabContainer = Instance.new("Frame", mainFrame)
     tabContainer.Size = UDim2.new(1, 0, 0, 30)
@@ -64,7 +63,6 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
     visualFrame.BackgroundTransparency = 1
     visualFrame.Visible = false
 
-    -- NUEVO: Frame para Misc
     local miscFrame = Instance.new("Frame", mainFrame)
     miscFrame.Size = UDim2.new(1, -10, 1, -70)
     miscFrame.Position = UDim2.new(0, 5, 0, 65)
@@ -149,10 +147,26 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         Aimbot.activateKillAura()
     end)
 
+    -- FastHeal dentro de Combate
+    local fastHealButton = Instance.new("TextButton", combatFrame)
+    fastHealButton.Size = UDim2.new(0, 160, 0, 30)
+    fastHealButton.Position = UDim2.new(0, 200, 0, 10)
+    fastHealButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
+    fastHealButton.TextColor3 = Color3.new(1, 1, 1)
+    fastHealButton.Font = Enum.Font.Arcade
+    fastHealButton.TextScaled = true
+    fastHealButton.Text = "FastHeal: OFF"
+    fastHealButton.MouseButton1Click:Connect(function()
+        if Aimbot.toggleAutoHeal then
+            Aimbot.toggleAutoHeal()
+            fastHealButton.Text = "FastHeal: " .. (Aimbot.autoHealEnabled and "ON" or "OFF")
+        end
+    end)
+
     -- Input de distancia para jugadores
     local playerDistLabel = Instance.new("TextLabel", combatFrame)
     playerDistLabel.Size = UDim2.new(0, 120, 0, 25)
-    playerDistLabel.Position = UDim2.new(0, 200, 0, 10)
+    playerDistLabel.Position = UDim2.new(0, 200, 0, 50)
     playerDistLabel.BackgroundTransparency = 1
     playerDistLabel.TextColor3 = Color3.new(1, 1, 1)
     playerDistLabel.Font = Enum.Font.Arcade
@@ -161,7 +175,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
 
     local playerDistInput = Instance.new("TextBox", combatFrame)
     playerDistInput.Size = UDim2.new(0, 60, 0, 25)
-    playerDistInput.Position = UDim2.new(0, 320, 0, 10)
+    playerDistInput.Position = UDim2.new(0, 320, 0, 50)
     playerDistInput.BackgroundColor3 = Color3.fromRGB(100, 50, 20)
     playerDistInput.TextColor3 = Color3.new(1, 1, 1)
     playerDistInput.Font = Enum.Font.Arcade
@@ -178,7 +192,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
     -- Input de distancia para animales
     local animalDistLabel = Instance.new("TextLabel", combatFrame)
     animalDistLabel.Size = UDim2.new(0, 120, 0, 25)
-    animalDistLabel.Position = UDim2.new(0, 200, 0, 40)
+    animalDistLabel.Position = UDim2.new(0, 200, 0, 80)
     animalDistLabel.BackgroundTransparency = 1
     animalDistLabel.TextColor3 = Color3.new(1, 1, 1)
     animalDistLabel.Font = Enum.Font.Arcade
@@ -187,7 +201,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
 
     local animalDistInput = Instance.new("TextBox", combatFrame)
     animalDistInput.Size = UDim2.new(0, 60, 0, 25)
-    animalDistInput.Position = UDim2.new(0, 320, 0, 40)
+    animalDistInput.Position = UDim2.new(0, 320, 0, 80)
     animalDistInput.BackgroundColor3 = Color3.fromRGB(100, 50, 20)
     animalDistInput.TextColor3 = Color3.new(1, 1, 1)
     animalDistInput.Font = Enum.Font.Arcade
