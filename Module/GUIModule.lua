@@ -83,22 +83,9 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         toggleButton.Text = "Aimbot: " .. (Aimbot.aimbotEnabled and "ON" or "OFF")
     end)
 
-    local lockButton = Instance.new("TextButton", combatFrame)
-    lockButton.Size = UDim2.new(0, 160, 0, 30)
-    lockButton.Position = UDim2.new(0, 10, 0, 50)
-    lockButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
-    lockButton.TextColor3 = Color3.new(1, 1, 1)
-    lockButton.Font = Enum.Font.Arcade
-    lockButton.TextScaled = true
-    lockButton.Text = "Lock: OFF"
-    lockButton.MouseButton1Click:Connect(function()
-        Aimbot.toggleLock()
-        lockButton.Text = "Lock: " .. (Aimbot.lockedTargetPart and "ON" or "OFF")
-    end)
-
     local teamButton = Instance.new("TextButton", combatFrame)
     teamButton.Size = UDim2.new(0, 160, 0, 30)
-    teamButton.Position = UDim2.new(0, 10, 0, 90)
+    teamButton.Position = UDim2.new(0, 10, 0, 50)
     teamButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
     teamButton.TextColor3 = Color3.new(1, 1, 1)
     teamButton.Font = Enum.Font.Arcade
@@ -109,8 +96,23 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         teamButton.Text = "Equipo: " .. Aimbot.targetTeamName
     end)
 
+    -- Lock justo debajo de selección de objetivo
+    local lockButton = Instance.new("TextButton", combatFrame)
+    lockButton.Size = UDim2.new(0, 160, 0, 30)
+    lockButton.Position = UDim2.new(0, 10, 0, 90)
+    lockButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
+    lockButton.TextColor3 = Color3.new(1, 1, 1)
+    lockButton.Font = Enum.Font.Arcade
+    lockButton.TextScaled = true
+    lockButton.Text = "Lock: OFF"
+    lockButton.MouseButton1Click:Connect(function()
+        Aimbot.toggleLock()
+        lockButton.Text = "Lock: " .. (Aimbot.lockedTargetPart and "ON" or "OFF")
+    end)
+
+    -- Parte: Cabeza y Kill Aura en la misma fila
     local aimPartButton = Instance.new("TextButton", combatFrame)
-    aimPartButton.Size = UDim2.new(0, 160, 0, 30)
+    aimPartButton.Size = UDim2.new(0, 110, 0, 30)
     aimPartButton.Position = UDim2.new(0, 10, 0, 130)
     aimPartButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
     aimPartButton.TextColor3 = Color3.new(1, 1, 1)
@@ -120,6 +122,18 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
     aimPartButton.MouseButton1Click:Connect(function()
         Aimbot.toggleAimPart()
         aimPartButton.Text = "Parte: " .. (Aimbot.aimAtChest and "Pecho" or "Cabeza")
+    end)
+
+    local killAuraButton = Instance.new("TextButton", combatFrame)
+    killAuraButton.Size = UDim2.new(0, 110, 0, 30)
+    killAuraButton.Position = UDim2.new(0, 130, 0, 130)
+    killAuraButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
+    killAuraButton.TextColor3 = Color3.new(1, 1, 1)
+    killAuraButton.Font = Enum.Font.Arcade
+    killAuraButton.TextScaled = true
+    killAuraButton.Text = "KILL AURA"
+    killAuraButton.MouseButton1Click:Connect(function()
+        Aimbot.activateKillAura()
     end)
 
     local animalButton = Instance.new("TextButton", combatFrame)
@@ -135,22 +149,9 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         animalButton.Text = "Animales: " .. (Aimbot.animalAimbotEnabled and "ON" or "OFF")
     end)
 
-    local killAuraButton = Instance.new("TextButton", combatFrame)
-    killAuraButton.Size = UDim2.new(0, 160, 0, 30)
-    killAuraButton.Position = UDim2.new(0, 10, 0, 210)
-    killAuraButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
-    killAuraButton.TextColor3 = Color3.new(1, 1, 1)
-    killAuraButton.Font = Enum.Font.Arcade
-    killAuraButton.TextScaled = true
-    killAuraButton.Text = "ACTIVAR KILL AURA"
-    killAuraButton.MouseButton1Click:Connect(function()
-        Aimbot.activateKillAura()
-    end)
-
-    -- FastHeal dentro de Combate
     local fastHealButton = Instance.new("TextButton", combatFrame)
-    fastHealButton.Size = UDim2.new(0, 160, 0, 30)
-    fastHealButton.Position = UDim2.new(0, 200, 0, 10)
+    fastHealButton.Size = UDim2.new(0, 110, 0, 30)
+    fastHealButton.Position = UDim2.new(0, 130, 0, 170)
     fastHealButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
     fastHealButton.TextColor3 = Color3.new(1, 1, 1)
     fastHealButton.Font = Enum.Font.Arcade
@@ -163,10 +164,10 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         end
     end)
 
-    -- Input de distancia para jugadores
+    -- Distancia jugadores
     local playerDistLabel = Instance.new("TextLabel", combatFrame)
     playerDistLabel.Size = UDim2.new(0, 120, 0, 25)
-    playerDistLabel.Position = UDim2.new(0, 200, 0, 50)
+    playerDistLabel.Position = UDim2.new(0, 200, 0, 10)
     playerDistLabel.BackgroundTransparency = 1
     playerDistLabel.TextColor3 = Color3.new(1, 1, 1)
     playerDistLabel.Font = Enum.Font.Arcade
@@ -175,7 +176,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
 
     local playerDistInput = Instance.new("TextBox", combatFrame)
     playerDistInput.Size = UDim2.new(0, 60, 0, 25)
-    playerDistInput.Position = UDim2.new(0, 320, 0, 50)
+    playerDistInput.Position = UDim2.new(0, 320, 0, 10)
     playerDistInput.BackgroundColor3 = Color3.fromRGB(100, 50, 20)
     playerDistInput.TextColor3 = Color3.new(1, 1, 1)
     playerDistInput.Font = Enum.Font.Arcade
@@ -189,10 +190,10 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         end
     end)
 
-    -- Input de distancia para animales
+    -- Distancia animales
     local animalDistLabel = Instance.new("TextLabel", combatFrame)
     animalDistLabel.Size = UDim2.new(0, 120, 0, 25)
-    animalDistLabel.Position = UDim2.new(0, 200, 0, 80)
+    animalDistLabel.Position = UDim2.new(0, 200, 0, 40)
     animalDistLabel.BackgroundTransparency = 1
     animalDistLabel.TextColor3 = Color3.new(1, 1, 1)
     animalDistLabel.Font = Enum.Font.Arcade
@@ -201,7 +202,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
 
     local animalDistInput = Instance.new("TextBox", combatFrame)
     animalDistInput.Size = UDim2.new(0, 60, 0, 25)
-    animalDistInput.Position = UDim2.new(0, 320, 0, 80)
+    animalDistInput.Position = UDim2.new(0, 320, 0, 40)
     animalDistInput.BackgroundColor3 = Color3.fromRGB(100, 50, 20)
     animalDistInput.TextColor3 = Color3.new(1, 1, 1)
     animalDistInput.Font = Enum.Font.Arcade
