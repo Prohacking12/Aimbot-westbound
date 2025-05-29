@@ -33,6 +33,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
     title.Font = Enum.Font.Arcade
     title.TextScaled = true
 
+    -- Ahora incluye "Misc"
     local tabs = {"Combate", "Visual", "Misc"}
     local tabContainer = Instance.new("Frame", mainFrame)
     tabContainer.Size = UDim2.new(1, 0, 0, 30)
@@ -63,6 +64,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
     visualFrame.BackgroundTransparency = 1
     visualFrame.Visible = false
 
+    -- NUEVO: Frame para Misc
     local miscFrame = Instance.new("Frame", mainFrame)
     miscFrame.Size = UDim2.new(1, -10, 1, -70)
     miscFrame.Position = UDim2.new(0, 5, 0, 65)
@@ -82,6 +84,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         Aimbot.toggleAimbot()
         toggleButton.Text = "Aimbot: " .. (Aimbot.aimbotEnabled and "ON" or "OFF")
     end)
+
     local lockButton = Instance.new("TextButton", combatFrame)
     lockButton.Size = UDim2.new(0, 160, 0, 30)
     lockButton.Position = UDim2.new(0, 10, 0, 50)
@@ -94,6 +97,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         Aimbot.toggleLock()
         lockButton.Text = "Lock: " .. (Aimbot.lockedTargetPart and "ON" or "OFF")
     end)
+
     local teamButton = Instance.new("TextButton", combatFrame)
     teamButton.Size = UDim2.new(0, 160, 0, 30)
     teamButton.Position = UDim2.new(0, 10, 0, 90)
@@ -106,6 +110,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         Aimbot.toggleTeam()
         teamButton.Text = "Equipo: " .. Aimbot.targetTeamName
     end)
+
     local aimPartButton = Instance.new("TextButton", combatFrame)
     aimPartButton.Size = UDim2.new(0, 160, 0, 30)
     aimPartButton.Position = UDim2.new(0, 10, 0, 130)
@@ -118,6 +123,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         Aimbot.toggleAimPart()
         aimPartButton.Text = "Parte: " .. (Aimbot.aimAtChest and "Pecho" or "Cabeza")
     end)
+
     local animalButton = Instance.new("TextButton", combatFrame)
     animalButton.Size = UDim2.new(0, 160, 0, 30)
     animalButton.Position = UDim2.new(0, 10, 0, 170)
@@ -130,6 +136,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         Aimbot.toggleAnimalAimbot()
         animalButton.Text = "Animales: " .. (Aimbot.animalAimbotEnabled and "ON" or "OFF")
     end)
+
     local killAuraButton = Instance.new("TextButton", combatFrame)
     killAuraButton.Size = UDim2.new(0, 160, 0, 30)
     killAuraButton.Position = UDim2.new(0, 10, 0, 210)
@@ -140,6 +147,58 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
     killAuraButton.Text = "ACTIVAR KILL AURA"
     killAuraButton.MouseButton1Click:Connect(function()
         Aimbot.activateKillAura()
+    end)
+
+    -- Input de distancia para jugadores
+    local playerDistLabel = Instance.new("TextLabel", combatFrame)
+    playerDistLabel.Size = UDim2.new(0, 120, 0, 25)
+    playerDistLabel.Position = UDim2.new(0, 200, 0, 10)
+    playerDistLabel.BackgroundTransparency = 1
+    playerDistLabel.TextColor3 = Color3.new(1, 1, 1)
+    playerDistLabel.Font = Enum.Font.Arcade
+    playerDistLabel.TextScaled = true
+    playerDistLabel.Text = "Dist Jugadores:"
+
+    local playerDistInput = Instance.new("TextBox", combatFrame)
+    playerDistInput.Size = UDim2.new(0, 60, 0, 25)
+    playerDistInput.Position = UDim2.new(0, 320, 0, 10)
+    playerDistInput.BackgroundColor3 = Color3.fromRGB(100, 50, 20)
+    playerDistInput.TextColor3 = Color3.new(1, 1, 1)
+    playerDistInput.Font = Enum.Font.Arcade
+    playerDistInput.TextScaled = true
+    playerDistInput.Text = tostring(Aimbot.playerMaxDistance)
+    playerDistInput.ClearTextOnFocus = false
+    playerDistInput.FocusLost:Connect(function()
+        local val = tonumber(playerDistInput.Text)
+        if val then
+            Aimbot.playerMaxDistance = val
+        end
+    end)
+
+    -- Input de distancia para animales
+    local animalDistLabel = Instance.new("TextLabel", combatFrame)
+    animalDistLabel.Size = UDim2.new(0, 120, 0, 25)
+    animalDistLabel.Position = UDim2.new(0, 200, 0, 40)
+    animalDistLabel.BackgroundTransparency = 1
+    animalDistLabel.TextColor3 = Color3.new(1, 1, 1)
+    animalDistLabel.Font = Enum.Font.Arcade
+    animalDistLabel.TextScaled = true
+    animalDistLabel.Text = "Dist Animales:"
+
+    local animalDistInput = Instance.new("TextBox", combatFrame)
+    animalDistInput.Size = UDim2.new(0, 60, 0, 25)
+    animalDistInput.Position = UDim2.new(0, 320, 0, 40)
+    animalDistInput.BackgroundColor3 = Color3.fromRGB(100, 50, 20)
+    animalDistInput.TextColor3 = Color3.new(1, 1, 1)
+    animalDistInput.Font = Enum.Font.Arcade
+    animalDistInput.TextScaled = true
+    animalDistInput.Text = tostring(Aimbot.animalMaxDistance)
+    animalDistInput.ClearTextOnFocus = false
+    animalDistInput.FocusLost:Connect(function()
+        local val = tonumber(animalDistInput.Text)
+        if val then
+            Aimbot.animalMaxDistance = val
+        end
     end)
 
     -- Visual
@@ -155,6 +214,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         Visual.toggleFullbright()
         fullbrightButton.Text = Visual.fullbrightEnabled and "Fullbright: ON" or "Fullbright: OFF"
     end)
+
     local xrayButton = Instance.new("TextButton", visualFrame)
     xrayButton.Size = UDim2.new(0, 160, 0, 30)
     xrayButton.Position = UDim2.new(0, 10, 0, 50)
@@ -167,6 +227,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         Visual.toggleXray()
         xrayButton.Text = Visual.xrayEnabled and "X-Ray: ON" or "X-Ray: OFF"
     end)
+
     local espButton = Instance.new("TextButton", visualFrame)
     espButton.Size = UDim2.new(0, 160, 0, 30)
     espButton.Position = UDim2.new(0, 10, 0, 90)
@@ -189,7 +250,6 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
     fastrobButton.TextSize = 20
     fastrobButton.Font = Enum.Font.SourceSansBold
     fastrobButton.Text = "Activar Robo Rápido"
-
     fastrobButton.MouseButton1Click:Connect(function()
         if FastRob.toggle then FastRob.toggle() end
         if FastRob.Enabled then
