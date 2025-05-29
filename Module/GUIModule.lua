@@ -3,7 +3,6 @@ local GUI = {}
 function GUI.create(Aimbot, Visual, ESP, FastRob)
     local Players = game:GetService("Players")
     local LocalPlayer = Players.LocalPlayer
-
     local screenGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
     screenGui.Name = "AimbotGUI"
     screenGui.ResetOnSpawn = false
@@ -18,8 +17,8 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
     toggleGuiButton.TextScaled = true
 
     local mainFrame = Instance.new("Frame", screenGui)
-    mainFrame.Size = UDim2.new(0, 420, 0, 340)
-    mainFrame.Position = UDim2.new(0.5, -210, 0.5, -170)
+    mainFrame.Size = UDim2.new(0, 380, 0, 300)
+    mainFrame.Position = UDim2.new(0.5, -190, 0.5, -150)
     mainFrame.BackgroundColor3 = Color3.fromRGB(40, 20, 10)
     mainFrame.BorderSizePixel = 2
     mainFrame.Visible = true
@@ -34,13 +33,12 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
     title.Font = Enum.Font.Arcade
     title.TextScaled = true
 
-    local tabs = {"Combate", "Visual", "FastRob"}
+    local tabs = {"Combate", "Visual", "Misc"}
     local tabContainer = Instance.new("Frame", mainFrame)
     tabContainer.Size = UDim2.new(1, 0, 0, 30)
     tabContainer.Position = UDim2.new(0, 0, 0, 30)
     tabContainer.BackgroundTransparency = 1
     local tabButtons = {}
-
     for i, tabName in ipairs(tabs) do
         local tabButton = Instance.new("TextButton", tabContainer)
         tabButton.Size = UDim2.new(1/#tabs, -2, 1, 0)
@@ -53,28 +51,25 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         tabButtons[tabName] = tabButton
     end
 
-    -- Combate
     local combatFrame = Instance.new("Frame", mainFrame)
     combatFrame.Size = UDim2.new(1, -10, 1, -70)
     combatFrame.Position = UDim2.new(0, 5, 0, 65)
     combatFrame.BackgroundTransparency = 1
     combatFrame.Visible = true
 
-    -- Visual
     local visualFrame = Instance.new("Frame", mainFrame)
     visualFrame.Size = UDim2.new(1, -10, 1, -70)
     visualFrame.Position = UDim2.new(0, 5, 0, 65)
     visualFrame.BackgroundTransparency = 1
     visualFrame.Visible = false
 
-    -- FastRob
-    local fastrobFrame = Instance.new("Frame", mainFrame)
-    fastrobFrame.Size = UDim2.new(1, -10, 1, -70)
-    fastrobFrame.Position = UDim2.new(0, 5, 0, 65)
-    fastrobFrame.BackgroundTransparency = 1
-    fastrobFrame.Visible = false
+    local miscFrame = Instance.new("Frame", mainFrame)
+    miscFrame.Size = UDim2.new(1, -10, 1, -70)
+    miscFrame.Position = UDim2.new(0, 5, 0, 65)
+    miscFrame.BackgroundTransparency = 1
+    miscFrame.Visible = false
 
-    -- Combate Buttons
+    -- Combate
     local toggleButton = Instance.new("TextButton", combatFrame)
     toggleButton.Size = UDim2.new(0, 160, 0, 30)
     toggleButton.Position = UDim2.new(0, 10, 0, 10)
@@ -87,7 +82,6 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         Aimbot.toggleAimbot()
         toggleButton.Text = "Aimbot: " .. (Aimbot.aimbotEnabled and "ON" or "OFF")
     end)
-
     local lockButton = Instance.new("TextButton", combatFrame)
     lockButton.Size = UDim2.new(0, 160, 0, 30)
     lockButton.Position = UDim2.new(0, 10, 0, 50)
@@ -100,7 +94,6 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         Aimbot.toggleLock()
         lockButton.Text = "Lock: " .. (Aimbot.lockedTargetPart and "ON" or "OFF")
     end)
-
     local teamButton = Instance.new("TextButton", combatFrame)
     teamButton.Size = UDim2.new(0, 160, 0, 30)
     teamButton.Position = UDim2.new(0, 10, 0, 90)
@@ -113,7 +106,6 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         Aimbot.toggleTeam()
         teamButton.Text = "Equipo: " .. Aimbot.targetTeamName
     end)
-
     local aimPartButton = Instance.new("TextButton", combatFrame)
     aimPartButton.Size = UDim2.new(0, 160, 0, 30)
     aimPartButton.Position = UDim2.new(0, 10, 0, 130)
@@ -126,7 +118,6 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         Aimbot.toggleAimPart()
         aimPartButton.Text = "Parte: " .. (Aimbot.aimAtChest and "Pecho" or "Cabeza")
     end)
-
     local animalButton = Instance.new("TextButton", combatFrame)
     animalButton.Size = UDim2.new(0, 160, 0, 30)
     animalButton.Position = UDim2.new(0, 10, 0, 170)
@@ -139,7 +130,6 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         Aimbot.toggleAnimalAimbot()
         animalButton.Text = "Animales: " .. (Aimbot.animalAimbotEnabled and "ON" or "OFF")
     end)
-
     local killAuraButton = Instance.new("TextButton", combatFrame)
     killAuraButton.Size = UDim2.new(0, 160, 0, 30)
     killAuraButton.Position = UDim2.new(0, 10, 0, 210)
@@ -152,7 +142,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         Aimbot.activateKillAura()
     end)
 
-    -- Visual Buttons
+    -- Visual
     local fullbrightButton = Instance.new("TextButton", visualFrame)
     fullbrightButton.Size = UDim2.new(0, 160, 0, 30)
     fullbrightButton.Position = UDim2.new(0, 10, 0, 10)
@@ -165,7 +155,6 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         Visual.toggleFullbright()
         fullbrightButton.Text = Visual.fullbrightEnabled and "Fullbright: ON" or "Fullbright: OFF"
     end)
-
     local xrayButton = Instance.new("TextButton", visualFrame)
     xrayButton.Size = UDim2.new(0, 160, 0, 30)
     xrayButton.Position = UDim2.new(0, 10, 0, 50)
@@ -178,7 +167,6 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         Visual.toggleXray()
         xrayButton.Text = Visual.xrayEnabled and "X-Ray: ON" or "X-Ray: OFF"
     end)
-
     local espButton = Instance.new("TextButton", visualFrame)
     espButton.Size = UDim2.new(0, 160, 0, 30)
     espButton.Position = UDim2.new(0, 10, 0, 90)
@@ -192,8 +180,8 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         espButton.Text = ESP.espEnabled and "ESP: ON" or "ESP: OFF"
     end)
 
-    -- FastRob Tab
-    local fastrobButton = Instance.new("TextButton", fastrobFrame)
+    -- MISC (FastRob)
+    local fastrobButton = Instance.new("TextButton", miscFrame)
     fastrobButton.Size = UDim2.new(0, 200, 0, 50)
     fastrobButton.Position = UDim2.new(0, 20, 0, 20)
     fastrobButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
@@ -206,10 +194,8 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         if FastRob.toggle then FastRob.toggle() end
         if FastRob.Enabled then
             fastrobButton.Text = "Desactivar Robo Rápido"
-            fastrobButton.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
         else
             fastrobButton.Text = "Activar Robo Rápido"
-            fastrobButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
         end
     end)
 
@@ -217,7 +203,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
     local function switchTab(tabName)
         combatFrame.Visible = (tabName == "Combate")
         visualFrame.Visible = (tabName == "Visual")
-        fastrobFrame.Visible = (tabName == "FastRob")
+        miscFrame.Visible = (tabName == "Misc")
         for name, button in pairs(tabButtons) do
             button.BackgroundColor3 = (name == tabName) and Color3.fromRGB(120, 60, 30) or Color3.fromRGB(80, 40, 20)
         end
