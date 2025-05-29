@@ -28,7 +28,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
     local title = Instance.new("TextLabel", mainFrame)
     title.Size = UDim2.new(1, 0, 0, 30)
     title.BackgroundColor3 = Color3.fromRGB(60, 30, 20)
-    title.Text = "Homelander Script"
+    title.Text = "Compound V hub"
     title.TextColor3 = Color3.fromRGB(255, 0, 0)
     title.Font = Enum.Font.Arcade
     title.TextScaled = true
@@ -110,7 +110,6 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         lockButton.Text = "Lock: " .. (Aimbot.lockedTargetPart and "ON" or "OFF")
     end)
 
-    -- Parte: Cabeza y Kill Aura en la misma fila
     local aimPartButton = Instance.new("TextButton", combatFrame)
     aimPartButton.Size = UDim2.new(0, 110, 0, 30)
     aimPartButton.Position = UDim2.new(0, 10, 0, 130)
@@ -164,7 +163,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         end
     end)
 
-    -- Distancia jugadores
+    
     local playerDistLabel = Instance.new("TextLabel", combatFrame)
     playerDistLabel.Size = UDim2.new(0, 120, 0, 25)
     playerDistLabel.Position = UDim2.new(0, 200, 0, 10)
@@ -190,7 +189,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         end
     end)
 
-    -- Distancia animales
+    
     local animalDistLabel = Instance.new("TextLabel", combatFrame)
     animalDistLabel.Size = UDim2.new(0, 120, 0, 25)
     animalDistLabel.Position = UDim2.new(0, 200, 0, 40)
@@ -216,7 +215,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         end
     end)
 
-    -- Visual
+    
     local fullbrightButton = Instance.new("TextButton", visualFrame)
     fullbrightButton.Size = UDim2.new(0, 160, 0, 30)
     fullbrightButton.Position = UDim2.new(0, 10, 0, 10)
@@ -256,7 +255,6 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         espButton.Text = ESP.espEnabled and "ESP: ON" or "ESP: OFF"
     end)
 
-    -- MISC (FastRob)
     local fastrobButton = Instance.new("TextButton", miscFrame)
     fastrobButton.Size = UDim2.new(0, 200, 0, 50)
     fastrobButton.Position = UDim2.new(0, 20, 0, 20)
@@ -274,7 +272,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         end
     end)
 
-    -- Tabs switching
+    
     local function switchTab(tabName)
         combatFrame.Visible = (tabName == "Combate")
         visualFrame.Visible = (tabName == "Visual")
