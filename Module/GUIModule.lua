@@ -1,6 +1,6 @@
 local GUI = {}
 
-function GUI.create(Aimbot, Visual, ESP, FastRob)
+function GUI.create(Aimbot, Visual, ESP, AutoFarm)
     local Players = game:GetService("Players")
     local LocalPlayer = Players.LocalPlayer
     local screenGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
@@ -28,16 +28,17 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
     local title = Instance.new("TextLabel", mainFrame)
     title.Size = UDim2.new(1, 0, 0, 30)
     title.BackgroundColor3 = Color3.fromRGB(60, 30, 20)
-    title.Text = "Compound V hub"
+    title.Text = "Homelander Script"
     title.TextColor3 = Color3.fromRGB(255, 0, 0)
     title.Font = Enum.Font.Arcade
     title.TextScaled = true
 
-    local tabs = {"Combate", "Visual", "Misc"}
+    local tabs = {"Combate", "Visual", "Farm"}
     local tabContainer = Instance.new("Frame", mainFrame)
     tabContainer.Size = UDim2.new(1, 0, 0, 30)
     tabContainer.Position = UDim2.new(0, 0, 0, 30)
     tabContainer.BackgroundTransparency = 1
+
     local tabButtons = {}
     for i, tabName in ipairs(tabs) do
         local tabButton = Instance.new("TextButton", tabContainer)
@@ -63,13 +64,30 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
     visualFrame.BackgroundTransparency = 1
     visualFrame.Visible = false
 
-    local miscFrame = Instance.new("Frame", mainFrame)
-    miscFrame.Size = UDim2.new(1, -10, 1, -70)
-    miscFrame.Position = UDim2.new(0, 5, 0, 65)
-    miscFrame.BackgroundTransparency = 1
-    miscFrame.Visible = false
+    local farmFrame = Instance.new("Frame", mainFrame)
+    farmFrame.Size = UDim2.new(1, -10, 1, -70)
+    farmFrame.Position = UDim2.new(0, 5, 0, 65)
+    farmFrame.BackgroundTransparency = 1
+    farmFrame.Visible = false
 
-    -- Combate
+    local function switchTab(tabName)
+        combatFrame.Visible = (tabName == "Combate")
+        visualFrame.Visible = (tabName == "Visual")
+        farmFrame.Visible = (tabName == "Farm")
+        for name, button in pairs(tabButtons) do
+            button.BackgroundColor3 = (name == tabName) and Color3.fromRGB(120, 60, 30) or Color3.fromRGB(80, 40, 20)
+        end
+    end
+    for name, button in pairs(tabButtons) do
+        button.MouseButton1Click:Connect(function()
+            switchTab(name)
+        end)
+    end
+
+    toggleGuiButton.MouseButton1Click:Connect(function()
+        mainFrame.Visible = not mainFrame.Visible
+    end)
+
     local toggleButton = Instance.new("TextButton", combatFrame)
     toggleButton.Size = UDim2.new(0, 160, 0, 30)
     toggleButton.Position = UDim2.new(0, 10, 0, 10)
@@ -83,23 +101,9 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         toggleButton.Text = "Aimbot: " .. (Aimbot.aimbotEnabled and "ON" or "OFF")
     end)
 
-    local teamButton = Instance.new("TextButton", combatFrame)
-    teamButton.Size = UDim2.new(0, 160, 0, 30)
-    teamButton.Position = UDim2.new(0, 10, 0, 50)
-    teamButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
-    teamButton.TextColor3 = Color3.new(1, 1, 1)
-    teamButton.Font = Enum.Font.Arcade
-    teamButton.TextScaled = true
-    teamButton.Text = "Equipo: Outlaws"
-    teamButton.MouseButton1Click:Connect(function()
-        Aimbot.toggleTeam()
-        teamButton.Text = "Equipo: " .. Aimbot.targetTeamName
-    end)
-
-    -- Lock justo debajo de selección de objetivo
     local lockButton = Instance.new("TextButton", combatFrame)
     lockButton.Size = UDim2.new(0, 160, 0, 30)
-    lockButton.Position = UDim2.new(0, 10, 0, 90)
+    lockButton.Position = UDim2.new(0, 10, 0, 50)
     lockButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
     lockButton.TextColor3 = Color3.new(1, 1, 1)
     lockButton.Font = Enum.Font.Arcade
@@ -110,8 +114,21 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         lockButton.Text = "Lock: " .. (Aimbot.lockedTargetPart and "ON" or "OFF")
     end)
 
+    local teamButton = Instance.new("TextButton", combatFrame)
+    teamButton.Size = UDim2.new(0, 160, 0, 30)
+    teamButton.Position = UDim2.new(0, 10, 0, 90)
+    teamButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
+    teamButton.TextColor3 = Color3.new(1, 1, 1)
+    teamButton.Font = Enum.Font.Arcade
+    teamButton.TextScaled = true
+    teamButton.Text = "Equipo: Outlaws"
+    teamButton.MouseButton1Click:Connect(function()
+        Aimbot.toggleTeam()
+        teamButton.Text = "Equipo: " .. Aimbot.targetTeamName
+    end)
+
     local aimPartButton = Instance.new("TextButton", combatFrame)
-    aimPartButton.Size = UDim2.new(0, 110, 0, 30)
+    aimPartButton.Size = UDim2.new(0, 160, 0, 30)
     aimPartButton.Position = UDim2.new(0, 10, 0, 130)
     aimPartButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
     aimPartButton.TextColor3 = Color3.new(1, 1, 1)
@@ -121,18 +138,6 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
     aimPartButton.MouseButton1Click:Connect(function()
         Aimbot.toggleAimPart()
         aimPartButton.Text = "Parte: " .. (Aimbot.aimAtChest and "Pecho" or "Cabeza")
-    end)
-
-    local killAuraButton = Instance.new("TextButton", combatFrame)
-    killAuraButton.Size = UDim2.new(0, 110, 0, 30)
-    killAuraButton.Position = UDim2.new(0, 130, 0, 130)
-    killAuraButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
-    killAuraButton.TextColor3 = Color3.new(1, 1, 1)
-    killAuraButton.Font = Enum.Font.Arcade
-    killAuraButton.TextScaled = true
-    killAuraButton.Text = "KILL AURA"
-    killAuraButton.MouseButton1Click:Connect(function()
-        Aimbot.activateKillAura()
     end)
 
     local animalButton = Instance.new("TextButton", combatFrame)
@@ -148,74 +153,18 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         animalButton.Text = "Animales: " .. (Aimbot.animalAimbotEnabled and "ON" or "OFF")
     end)
 
-    local fastHealButton = Instance.new("TextButton", combatFrame)
-    fastHealButton.Size = UDim2.new(0, 110, 0, 30)
-    fastHealButton.Position = UDim2.new(0, 130, 0, 170)
-    fastHealButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
-    fastHealButton.TextColor3 = Color3.new(1, 1, 1)
-    fastHealButton.Font = Enum.Font.Arcade
-    fastHealButton.TextScaled = true
-    fastHealButton.Text = "FastHeal: OFF"
-    fastHealButton.MouseButton1Click:Connect(function()
-        if Aimbot.toggleAutoHeal then
-            Aimbot.toggleAutoHeal()
-            fastHealButton.Text = "FastHeal: " .. (Aimbot.autoHealEnabled and "ON" or "OFF")
-        end
+    local killAuraButton = Instance.new("TextButton", combatFrame)
+    killAuraButton.Size = UDim2.new(0, 160, 0, 30)
+    killAuraButton.Position = UDim2.new(0, 10, 0, 210)
+    killAuraButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
+    killAuraButton.TextColor3 = Color3.new(1, 1, 1)
+    killAuraButton.Font = Enum.Font.Arcade
+    killAuraButton.TextScaled = true
+    killAuraButton.Text = "ACTIVAR KILL AURA"
+    killAuraButton.MouseButton1Click:Connect(function()
+        Aimbot.activateKillAura()
     end)
 
-    
-    local playerDistLabel = Instance.new("TextLabel", combatFrame)
-    playerDistLabel.Size = UDim2.new(0, 120, 0, 25)
-    playerDistLabel.Position = UDim2.new(0, 200, 0, 10)
-    playerDistLabel.BackgroundTransparency = 1
-    playerDistLabel.TextColor3 = Color3.new(1, 1, 1)
-    playerDistLabel.Font = Enum.Font.Arcade
-    playerDistLabel.TextScaled = true
-    playerDistLabel.Text = "Dist Jugadores:"
-
-    local playerDistInput = Instance.new("TextBox", combatFrame)
-    playerDistInput.Size = UDim2.new(0, 60, 0, 25)
-    playerDistInput.Position = UDim2.new(0, 320, 0, 10)
-    playerDistInput.BackgroundColor3 = Color3.fromRGB(100, 50, 20)
-    playerDistInput.TextColor3 = Color3.new(1, 1, 1)
-    playerDistInput.Font = Enum.Font.Arcade
-    playerDistInput.TextScaled = true
-    playerDistInput.Text = tostring(Aimbot.playerMaxDistance)
-    playerDistInput.ClearTextOnFocus = false
-    playerDistInput.FocusLost:Connect(function()
-        local val = tonumber(playerDistInput.Text)
-        if val then
-            Aimbot.playerMaxDistance = val
-        end
-    end)
-
-    
-    local animalDistLabel = Instance.new("TextLabel", combatFrame)
-    animalDistLabel.Size = UDim2.new(0, 120, 0, 25)
-    animalDistLabel.Position = UDim2.new(0, 200, 0, 40)
-    animalDistLabel.BackgroundTransparency = 1
-    animalDistLabel.TextColor3 = Color3.new(1, 1, 1)
-    animalDistLabel.Font = Enum.Font.Arcade
-    animalDistLabel.TextScaled = true
-    animalDistLabel.Text = "Dist Animales:"
-
-    local animalDistInput = Instance.new("TextBox", combatFrame)
-    animalDistInput.Size = UDim2.new(0, 60, 0, 25)
-    animalDistInput.Position = UDim2.new(0, 320, 0, 40)
-    animalDistInput.BackgroundColor3 = Color3.fromRGB(100, 50, 20)
-    animalDistInput.TextColor3 = Color3.new(1, 1, 1)
-    animalDistInput.Font = Enum.Font.Arcade
-    animalDistInput.TextScaled = true
-    animalDistInput.Text = tostring(Aimbot.animalMaxDistance)
-    animalDistInput.ClearTextOnFocus = false
-    animalDistInput.FocusLost:Connect(function()
-        local val = tonumber(animalDistInput.Text)
-        if val then
-            Aimbot.animalMaxDistance = val
-        end
-    end)
-
-    
     local fullbrightButton = Instance.new("TextButton", visualFrame)
     fullbrightButton.Size = UDim2.new(0, 160, 0, 30)
     fullbrightButton.Position = UDim2.new(0, 10, 0, 10)
@@ -255,40 +204,28 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         espButton.Text = ESP.espEnabled and "ESP: ON" or "ESP: OFF"
     end)
 
-    local fastrobButton = Instance.new("TextButton", miscFrame)
-    fastrobButton.Size = UDim2.new(0, 200, 0, 50)
-    fastrobButton.Position = UDim2.new(0, 20, 0, 20)
-    fastrobButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    fastrobButton.TextColor3 = Color3.new(1, 1, 1)
-    fastrobButton.TextSize = 20
-    fastrobButton.Font = Enum.Font.SourceSansBold
-    fastrobButton.Text = "Activar Robo Rápido"
-    fastrobButton.MouseButton1Click:Connect(function()
-        if FastRob.toggle then FastRob.toggle() end
-        if FastRob.Enabled then
-            fastrobButton.Text = "Desactivar Robo Rápido"
+    local farmToggle = Instance.new("TextButton", farmFrame)
+    farmToggle.Size = UDim2.new(0, 200, 0, 40)
+    farmToggle.Position = UDim2.new(0, 10, 0, 10)
+    farmToggle.BackgroundColor3 = Color3.fromRGB(34, 139, 34)
+    farmToggle.TextColor3 = Color3.new(1, 1, 1)
+    farmToggle.Font = Enum.Font.Arcade
+    farmToggle.TextScaled = true
+    farmToggle.Text = "AutoFarm: OFF"
+
+    local farmEnabled = false
+    farmToggle.MouseButton1Click:Connect(function()
+        farmEnabled = not farmEnabled
+        if farmEnabled then
+            AutoFarm.notify()
+            AutoFarm.start()
+            farmToggle.Text = "AutoFarm: ON"
+            farmToggle.BackgroundColor3 = Color3.fromRGB(60, 180, 75)
         else
-            fastrobButton.Text = "Activar Robo Rápido"
+            AutoFarm.stop()
+            farmToggle.Text = "AutoFarm: OFF"
+            farmToggle.BackgroundColor3 = Color3.fromRGB(34, 139, 34)
         end
-    end)
-
-    
-    local function switchTab(tabName)
-        combatFrame.Visible = (tabName == "Combate")
-        visualFrame.Visible = (tabName == "Visual")
-        miscFrame.Visible = (tabName == "Misc")
-        for name, button in pairs(tabButtons) do
-            button.BackgroundColor3 = (name == tabName) and Color3.fromRGB(120, 60, 30) or Color3.fromRGB(80, 40, 20)
-        end
-    end
-    for name, button in pairs(tabButtons) do
-        button.MouseButton1Click:Connect(function()
-            switchTab(name)
-        end)
-    end
-
-    toggleGuiButton.MouseButton1Click:Connect(function()
-        mainFrame.Visible = not mainFrame.Visible
     end)
 
     GUI.mainFrame = mainFrame
