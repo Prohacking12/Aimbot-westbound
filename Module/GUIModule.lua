@@ -1,12 +1,10 @@
 local GUI = {}
 
-local AutoFarm = require(game:HttpGet("https://raw.githubusercontent.com/Prohacking12/Aimbot-westbound/refs/heads/main/Module/AutoFarmModule.lua", true))
-
-function GUI.create(Aimbot, Visual, ESP, FastRob)
+function GUI.create(Aimbot, Visual, ESP, FastRob, AutoFarm)
     local Players = game:GetService("Players")
     local LocalPlayer = Players.LocalPlayer
     local screenGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
-    screenGui.Name = "AimbotGUI"
+    screenGui.Name = "CompoundVHubGUI"
     screenGui.ResetOnSpawn = false
 
     local toggleGuiButton = Instance.new("TextButton", screenGui)
@@ -78,6 +76,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
     farmFrame.BackgroundTransparency = 1
     farmFrame.Visible = false
 
+    -- Combate tab buttons
     local toggleButton = Instance.new("TextButton", combatFrame)
     toggleButton.Size = UDim2.new(0, 160, 0, 30)
     toggleButton.Position = UDim2.new(0, 10, 0, 10)
@@ -220,6 +219,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         end
     end)
 
+    -- Visual tab buttons
     local fullbrightButton = Instance.new("TextButton", visualFrame)
     fullbrightButton.Size = UDim2.new(0, 160, 0, 30)
     fullbrightButton.Position = UDim2.new(0, 10, 0, 10)
@@ -259,6 +259,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         espButton.Text = ESP.espEnabled and "ESP: ON" or "ESP: OFF"
     end)
 
+    -- Misc tab buttons
     local fastrobButton = Instance.new("TextButton", miscFrame)
     fastrobButton.Size = UDim2.new(0, 200, 0, 50)
     fastrobButton.Position = UDim2.new(0, 20, 0, 20)
@@ -276,6 +277,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         end
     end)
 
+    -- Farm tab toggle button
     local farmToggleButton = Instance.new("TextButton", farmFrame)
     farmToggleButton.Size = UDim2.new(0, 160, 0, 30)
     farmToggleButton.Position = UDim2.new(0, 10, 0, 10)
@@ -309,6 +311,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
             button.BackgroundColor3 = (name == tabName) and Color3.fromRGB(120, 60, 30) or Color3.fromRGB(80, 40, 20)
         end
     end
+
     for name, button in pairs(tabButtons) do
         button.MouseButton1Click:Connect(function()
             switchTab(name)
