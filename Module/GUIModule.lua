@@ -33,7 +33,7 @@ function GUI.create(Aimbot, Visual, ESP, AutoFarm)
     title.Font = Enum.Font.Arcade
     title.TextScaled = true
 
-    local tabs = {"Combate", "Visual", "Farm"}
+    local tabs = {"Combate", "Visual", "Farm", "Configuración"}
     local tabContainer = Instance.new("Frame", mainFrame)
     tabContainer.Size = UDim2.new(1, 0, 0, 30)
     tabContainer.Position = UDim2.new(0, 0, 0, 30)
@@ -70,10 +70,17 @@ function GUI.create(Aimbot, Visual, ESP, AutoFarm)
     farmFrame.BackgroundTransparency = 1
     farmFrame.Visible = false
 
+    local configFrame = Instance.new("Frame", mainFrame)
+    configFrame.Size = UDim2.new(1, -10, 1, -70)
+    configFrame.Position = UDim2.new(0, 5, 0, 65)
+    configFrame.BackgroundTransparency = 1
+    configFrame.Visible = false
+
     local function switchTab(tabName)
         combatFrame.Visible = (tabName == "Combate")
         visualFrame.Visible = (tabName == "Visual")
         farmFrame.Visible = (tabName == "Farm")
+        configFrame.Visible = (tabName == "Configuración")
         for name, button in pairs(tabButtons) do
             button.BackgroundColor3 = (name == tabName) and Color3.fromRGB(120, 60, 30) or Color3.fromRGB(80, 40, 20)
         end
@@ -227,6 +234,16 @@ function GUI.create(Aimbot, Visual, ESP, AutoFarm)
             farmToggle.BackgroundColor3 = Color3.fromRGB(34, 139, 34)
         end
     end)
+
+    -- Aquí puedes agregar tus controles de configuración
+    local configLabel = Instance.new("TextLabel", configFrame)
+    configLabel.Size = UDim2.new(0, 200, 0, 40)
+    configLabel.Position = UDim2.new(0, 10, 0, 10)
+    configLabel.BackgroundTransparency = 1
+    configLabel.TextColor3 = Color3.new(1, 1, 1)
+    configLabel.Font = Enum.Font.Arcade
+    configLabel.TextScaled = true
+    configLabel.Text = "Opciones de configuración aquí"
 
     GUI.mainFrame = mainFrame
 end
