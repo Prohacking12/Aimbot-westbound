@@ -1,5 +1,4 @@
 local GUI = {}
-
 function GUI.create(Aimbot, Visual, ESP, AutoFarm)
     local Players = game:GetService("Players")
     local LocalPlayer = Players.LocalPlayer
@@ -33,7 +32,7 @@ function GUI.create(Aimbot, Visual, ESP, AutoFarm)
     title.Font = Enum.Font.Arcade
     title.TextScaled = true
 
-    local tabs = {"Combate", "Visual", "Configuración", "Farm"}
+    local tabs = {"Combate", "Visual", "Farm"}
     local tabContainer = Instance.new("Frame", mainFrame)
     tabContainer.Size = UDim2.new(1, 0, 0, 30)
     tabContainer.Position = UDim2.new(0, 0, 0, 30)
@@ -64,12 +63,6 @@ function GUI.create(Aimbot, Visual, ESP, AutoFarm)
     visualFrame.BackgroundTransparency = 1
     visualFrame.Visible = false
 
-    local configFrame = Instance.new("Frame", mainFrame)
-    configFrame.Size = UDim2.new(1, -10, 1, -70)
-    configFrame.Position = UDim2.new(0, 5, 0, 65)
-    configFrame.BackgroundTransparency = 1
-    configFrame.Visible = false
-
     local farmFrame = Instance.new("Frame", mainFrame)
     farmFrame.Size = UDim2.new(1, -10, 1, -70)
     farmFrame.Position = UDim2.new(0, 5, 0, 65)
@@ -79,7 +72,6 @@ function GUI.create(Aimbot, Visual, ESP, AutoFarm)
     local function switchTab(tabName)
         combatFrame.Visible = (tabName == "Combate")
         visualFrame.Visible = (tabName == "Visual")
-        configFrame.Visible = (tabName == "Configuración")
         farmFrame.Visible = (tabName == "Farm")
         for name, button in pairs(tabButtons) do
             button.BackgroundColor3 = (name == tabName) and Color3.fromRGB(120, 60, 30) or Color3.fromRGB(80, 40, 20)
@@ -211,15 +203,6 @@ function GUI.create(Aimbot, Visual, ESP, AutoFarm)
         espButton.Text = ESP.espEnabled and "ESP: ON" or "ESP: OFF"
     end)
 
-    local configLabel = Instance.new("TextLabel", configFrame)
-    configLabel.Size = UDim2.new(0, 200, 0, 40)
-    configLabel.Position = UDim2.new(0, 10, 0, 10)
-    configLabel.BackgroundTransparency = 1
-    configLabel.TextColor3 = Color3.new(1, 1, 1)
-    configLabel.Font = Enum.Font.Arcade
-    configLabel.TextScaled = true
-    configLabel.Text = "Opciones de configuración aquí"
-
     local farmToggle = Instance.new("TextButton", farmFrame)
     farmToggle.Size = UDim2.new(0, 200, 0, 40)
     farmToggle.Position = UDim2.new(0, 10, 0, 10)
@@ -233,12 +216,12 @@ function GUI.create(Aimbot, Visual, ESP, AutoFarm)
     farmToggle.MouseButton1Click:Connect(function()
         farmEnabled = not farmEnabled
         if farmEnabled then
-            AutoFarm.notify()
-            AutoFarm.start()
+            if AutoFarm.notify then AutoFarm.notify() end
+            if AutoFarm.start then AutoFarm.start() end
             farmToggle.Text = "AutoFarm: ON"
             farmToggle.BackgroundColor3 = Color3.fromRGB(60, 180, 75)
         else
-            AutoFarm.stop()
+            if AutoFarm.stop then AutoFarm.stop() end
             farmToggle.Text = "AutoFarm: OFF"
             farmToggle.BackgroundColor3 = Color3.fromRGB(34, 139, 34)
         end
@@ -246,5 +229,4 @@ function GUI.create(Aimbot, Visual, ESP, AutoFarm)
 
     GUI.mainFrame = mainFrame
 end
-
 return GUI
