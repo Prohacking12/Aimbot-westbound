@@ -1,118 +1,129 @@
 local AutoFarm = {}
-local RunService = game:GetService("RunService")
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Workspace = game:GetService("Workspace")
+local isRunning = false
+local connection
 
-local player = Players.LocalPlayer
-local camera = Workspace.CurrentCamera
-local char = player.Character or player.CharacterAdded:Wait()
-local humanoid = char:FindFirstChildWhichIsA("Humanoid")
-local running = false
-local conn
+function AutoFarm.Start()
+    if isRunning then return end
+    isRunning = true
 
-local HumanoidRootPart = char:WaitForChild("HumanoidRootPart")
-local States = player:WaitForChild("States")
-local Stats = player:WaitForChild("Stats")
+    local player = game.Players.LocalPlayer
+    local cam = workspace.CurrentCamera
+    local pos, char = cam.CFrame, player.Character
+    local human = char and char:FindFirstChildWhichIsA("Humanoid")
 
-local RobRemote = ReplicatedStorage:WaitForChild("GeneralEvents"):WaitForChild("Rob")
-local BagLevel = Stats:WaitForChild("BagSizeLevel"):WaitForChild("CurrentAmount")
-local BagAmount = States:WaitForChild("Bag")
-local Camp = CFrame.new(1636.62537, 104.349976, -1736.184)
-
-local function CloneHumanoid()
-    if humanoid then
-        local newHumanoid = humanoid:Clone()
-        newHumanoid.Parent = char
+    if human then
+        local clone = human:Clone()
+        clone.Parent = char
         player.Character = nil
-        newHumanoid:SetStateEnabled(Enum.HumanoidStateType.Dead, false)
-        newHumanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
-        newHumanoid:SetStateEnabled(Enum.HumanoidStateType.Physics, false)
-        humanoid:Destroy()
+        clone:SetStateEnabled(Enum.HumanoidStateType.Dead, false)
+        clone:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+        clone:SetStateEnabled(Enum.HumanoidStateType.Physics, false)
+        human:Destroy()
         player.Character = char
-        camera.CameraSubject = newHumanoid
-        camera.CFrame = camera.CFrame
-        newHumanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+        cam.CameraSubject = clone
+        cam.CFrame = pos
+        clone.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
 
-        local animate = char:FindFirstChild("Animate")
-        if animate then
-            animate.Disabled = true
+        local anim = char:FindFirstChild("Animate")
+        if anim then
+            anim.Disabled = true
             task.wait()
-            animate.Disabled = false
+            anim.Disabled = false
         end
 
-        newHumanoid.Health = newHumanoid.MaxHealth
+        clone.Health = clone.MaxHealth
     end
-end
 
-local function TeleportToCamp()
-    HumanoidRootPart.CFrame = Camp
-end
+    task.wait(2)
 
-local function CashRegisterFarm()
-    for _, item in ipairs(Workspace:GetChildren()) do
-        if BagAmount.Value >= BagLevel.Value then
-            TeleportToCamp()
-            break
-        elseif item:IsA("Model") and item.Name == "CashRegister" then
-            local openPart = item:FindFirstChild("Open")
-            if openPart then
-                HumanoidRootPart.CFrame = openPart.CFrame
-                RobRemote:FireServer("Register", {
-                    Part = item:FindFirstChild("Union"),
-                    OpenPart = openPart,
-                    ActiveValue = item:FindFirstChild("Active"),
-                    Active = true
-                })
-            end
-        end
+    local Workspace = game:GetService("Workspace")
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    local Players = game:GetService("Players")
+    local RunService = game:GetService("RunService")
+
+    local LocalPlayer = Players.LocalPlayer
+    local Character = LocalPlayer.Character
+    local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+    local States = LocalPlayer:FindFirstChild("States")
+    local Stats = LocalPlayer:FindFirstChild("Stats")
+    local RobRemote = ReplicatedStorage:WaitForChild("GeneralEvents"):WaitForChild("Rob")
+
+    local BagLevel = Stats:FindFirstChild("BagSizeLevel"):FindFirstChild("CurrentAmount")
+    local BagAmount = States:FindFirstChild("Bag")
+
+    local Camp = CFrame.new(1636.62537, 104.349976, -1736.184)
+
+    local function TeleportToCamp()
+        HumanoidRootPart.CFrame = Camp
     end
-end
 
-local function BankFarm()
-    for _, item in ipairs(Workspace:GetChildren()) do
-        if BagAmount.Value >= BagLevel.Value then
-            TeleportToCamp()
-            break
-        elseif item:IsA("Model") and item.Name == "Safe" and item:FindFirstChild("Amount").Value > 0 then
-            local safePart = item:FindFirstChild("Safe")
-            if safePart then
-                HumanoidRootPart.CFrame = safePart.CFrame
-                if item:FindFirstChild("Open").Value then
-                    RobRemote:FireServer("Safe", item)
-                else
-                    item:FindFirstChild("OpenSafe"):FireServer("Completed")
-                    RobRemote:FireServer("Safe", item)
+    local function CashRegisterFarm()
+        for _, Item in ipairs(Workspace:GetChildren()) do
+            if BagAmount.Value == BagLevel.Value then
+                TeleportToCamp()
+                break
+            elseif Item:IsA("Model") and Item.Name == "CashRegister" then
+                local OpenPart = Item:FindFirstChild("Open")
+                if OpenPart then
+                    HumanoidRootPart.CFrame = OpenPart.CFrame
+                    RobRemote:FireServer("Register", {
+                        ["Part"] = Item:FindFirstChild("Union"),
+                        ["OpenPart"] = OpenPart,
+                        ["ActiveValue"] = Item:FindFirstChild("Active"),
+                        ["Active"] = true
+                    })
                 end
             end
         end
     end
-end
 
-function AutoFarm.Start()
-    if running then return end
-    running = true
-    CloneHumanoid()
-    game.StarterGui:SetCore("SendNotification", {
-        Title = "Auto Farm";
-        Text = "Auto Farm Activado";
-        Duration = 5;
-    })
+    local function BankFarm()
+        for _, Item in ipairs(Workspace:GetChildren()) do
+            if BagAmount.Value == BagLevel.Value then
+                TeleportToCamp()
+                break
+            elseif Item:IsA("Model") and Item.Name == "Safe" and Item:FindFirstChild("Amount").Value > 0 then
+                local SafePart = Item:FindFirstChild("Safe")
+                if SafePart then
+                    HumanoidRootPart.CFrame = SafePart.CFrame
+                    if Item:FindFirstChild("Open").Value then
+                        RobRemote:FireServer("Safe", Item)
+                    else
+                        Item:FindFirstChild("OpenSafe"):FireServer("Completed")
+                        RobRemote:FireServer("Safe", Item)
+                    end
+                end
+            end
+        end
+    end
 
-    conn = RunService.RenderStepped:Connect(function()
+    connection = RunService.RenderStepped:Connect(function()
+        if not isRunning then return end
         CashRegisterFarm()
         BankFarm()
     end)
-end
-
-function AutoFarm.Stop()
-    if not running then return end
-    running = false
-    if conn then conn:Disconnect() end
 
     game.StarterGui:SetCore("SendNotification", {
         Title = "Auto Farm";
-        Text = "Auto Farm Desactivado";
+        Text = "Auto Farm executed";
+        Duration = 5;
+    })
+end
+
+function AutoFarm.Stop()
+    isRunning = false
+    if connection then
+        connection:Disconnect()
+        connection = nil
+    end
+
+    if _G.ReloadGUI then
+        _G.ReloadGUI()
+    end
+
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "Auto Farm";
+        Text = "Auto Farm stopped";
         Duration = 5;
     })
 end
