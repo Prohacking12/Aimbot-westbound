@@ -1,5 +1,7 @@
 local GUI = {}
 
+local AutoFarm = require(game:HttpGet("https://raw.githubusercontent.com/Prohacking12/Aimbot-westbound/refs/heads/main/Module/AutoFarmModule.lua", true))
+
 function GUI.create(Aimbot, Visual, ESP, FastRob)
     local Players = game:GetService("Players")
     local LocalPlayer = Players.LocalPlayer
@@ -33,11 +35,12 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
     title.Font = Enum.Font.Arcade
     title.TextScaled = true
 
-    local tabs = {"Combate", "Visual", "Misc"}
+    local tabs = {"Combate", "Visual", "Misc", "Farm"}
     local tabContainer = Instance.new("Frame", mainFrame)
     tabContainer.Size = UDim2.new(1, 0, 0, 30)
     tabContainer.Position = UDim2.new(0, 0, 0, 30)
     tabContainer.BackgroundTransparency = 1
+
     local tabButtons = {}
     for i, tabName in ipairs(tabs) do
         local tabButton = Instance.new("TextButton", tabContainer)
@@ -69,7 +72,12 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
     miscFrame.BackgroundTransparency = 1
     miscFrame.Visible = false
 
-    -- Combate
+    local farmFrame = Instance.new("Frame", mainFrame)
+    farmFrame.Size = UDim2.new(1, -10, 1, -70)
+    farmFrame.Position = UDim2.new(0, 5, 0, 65)
+    farmFrame.BackgroundTransparency = 1
+    farmFrame.Visible = false
+
     local toggleButton = Instance.new("TextButton", combatFrame)
     toggleButton.Size = UDim2.new(0, 160, 0, 30)
     toggleButton.Position = UDim2.new(0, 10, 0, 10)
@@ -96,7 +104,6 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         teamButton.Text = "Equipo: " .. Aimbot.targetTeamName
     end)
 
-    -- Lock justo debajo de selección de objetivo
     local lockButton = Instance.new("TextButton", combatFrame)
     lockButton.Size = UDim2.new(0, 160, 0, 30)
     lockButton.Position = UDim2.new(0, 10, 0, 90)
@@ -163,7 +170,6 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         end
     end)
 
-    
     local playerDistLabel = Instance.new("TextLabel", combatFrame)
     playerDistLabel.Size = UDim2.new(0, 120, 0, 25)
     playerDistLabel.Position = UDim2.new(0, 200, 0, 10)
@@ -189,7 +195,6 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         end
     end)
 
-    
     local animalDistLabel = Instance.new("TextLabel", combatFrame)
     animalDistLabel.Size = UDim2.new(0, 120, 0, 25)
     animalDistLabel.Position = UDim2.new(0, 200, 0, 40)
@@ -215,7 +220,6 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         end
     end)
 
-    
     local fullbrightButton = Instance.new("TextButton", visualFrame)
     fullbrightButton.Size = UDim2.new(0, 160, 0, 30)
     fullbrightButton.Position = UDim2.new(0, 10, 0, 10)
@@ -272,11 +276,35 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         end
     end)
 
-    
+    local farmToggleButton = Instance.new("TextButton", farmFrame)
+    farmToggleButton.Size = UDim2.new(0, 160, 0, 30)
+    farmToggleButton.Position = UDim2.new(0, 10, 0, 10)
+    farmToggleButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
+    farmToggleButton.TextColor3 = Color3.new(1, 1, 1)
+    farmToggleButton.Font = Enum.Font.Arcade
+    farmToggleButton.TextScaled = true
+    farmToggleButton.Text = "Auto Farm: OFF"
+
+    local autoFarmEnabled = false
+
+    farmToggleButton.MouseButton1Click:Connect(function()
+        autoFarmEnabled = not autoFarmEnabled
+        if autoFarmEnabled then
+            farmToggleButton.Text = "Auto Farm: ON"
+            farmToggleButton.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+            AutoFarm.Start()
+        else
+            farmToggleButton.Text = "Auto Farm: OFF"
+            farmToggleButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
+            AutoFarm.Stop()
+        end
+    end)
+
     local function switchTab(tabName)
         combatFrame.Visible = (tabName == "Combate")
         visualFrame.Visible = (tabName == "Visual")
         miscFrame.Visible = (tabName == "Misc")
+        farmFrame.Visible = (tabName == "Farm")
         for name, button in pairs(tabButtons) do
             button.BackgroundColor3 = (name == tabName) and Color3.fromRGB(120, 60, 30) or Color3.fromRGB(80, 40, 20)
         end
