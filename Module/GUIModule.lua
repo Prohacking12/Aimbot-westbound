@@ -32,7 +32,7 @@ function GUI.create(Aimbot, Visual, ESP, AutoFarm)
     title.Font = Enum.Font.Arcade
     title.TextScaled = true
 
-    local tabs = {"Combate", "Visual", "Farm"}
+    local tabs = {"Combate", "Visual", "Configuración", "Farm"}
     local tabContainer = Instance.new("Frame", mainFrame)
     tabContainer.Size = UDim2.new(1, 0, 0, 30)
     tabContainer.Position = UDim2.new(0, 0, 0, 30)
@@ -63,6 +63,12 @@ function GUI.create(Aimbot, Visual, ESP, AutoFarm)
     visualFrame.BackgroundTransparency = 1
     visualFrame.Visible = false
 
+    local configFrame = Instance.new("Frame", mainFrame)
+    configFrame.Size = UDim2.new(1, -10, 1, -70)
+    configFrame.Position = UDim2.new(0, 5, 0, 65)
+    configFrame.BackgroundTransparency = 1
+    configFrame.Visible = false
+
     local farmFrame = Instance.new("Frame", mainFrame)
     farmFrame.Size = UDim2.new(1, -10, 1, -70)
     farmFrame.Position = UDim2.new(0, 5, 0, 65)
@@ -72,6 +78,7 @@ function GUI.create(Aimbot, Visual, ESP, AutoFarm)
     local function switchTab(tabName)
         combatFrame.Visible = (tabName == "Combate")
         visualFrame.Visible = (tabName == "Visual")
+        configFrame.Visible = (tabName == "Configuración")
         farmFrame.Visible = (tabName == "Farm")
         for name, button in pairs(tabButtons) do
             button.BackgroundColor3 = (name == tabName) and Color3.fromRGB(120, 60, 30) or Color3.fromRGB(80, 40, 20)
@@ -201,6 +208,78 @@ function GUI.create(Aimbot, Visual, ESP, AutoFarm)
     espButton.MouseButton1Click:Connect(function()
         ESP.toggleESP()
         espButton.Text = ESP.espEnabled and "ESP: ON" or "ESP: OFF"
+    end)
+
+    local playerDistLabel = Instance.new("TextLabel", configFrame)
+    playerDistLabel.Size = UDim2.new(0, 200, 0, 20)
+    playerDistLabel.Position = UDim2.new(0, 10, 0, 10)
+    playerDistLabel.BackgroundTransparency = 1
+    playerDistLabel.TextColor3 = Color3.new(1, 1, 1)
+    playerDistLabel.Font = Enum.Font.Arcade
+    playerDistLabel.TextScaled = true
+    playerDistLabel.Text = "Distancia jugadores:"
+
+    local playerDistInput = Instance.new("TextBox", configFrame)
+    playerDistInput.Size = UDim2.new(0, 200, 0, 20)
+    playerDistInput.Position = UDim2.new(0, 10, 0, 35)
+    playerDistInput.BackgroundColor3 = Color3.fromRGB(80, 40, 20)
+    playerDistInput.TextColor3 = Color3.new(1, 1, 1)
+    playerDistInput.Font = Enum.Font.Arcade
+    playerDistInput.TextScaled = true
+    playerDistInput.Text = tostring(Aimbot.maxDistance or 200)
+    playerDistInput.FocusLost:Connect(function(enter)
+        if enter then
+            local input = tonumber(playerDistInput.Text)
+            if input then
+                Aimbot.maxDistance = input
+                playerDistInput.Text = tostring(Aimbot.maxDistance)
+            else
+                playerDistInput.Text = tostring(Aimbot.maxDistance)
+            end
+        end
+    end)
+
+    local animalDistLabel = Instance.new("TextLabel", configFrame)
+    animalDistLabel.Size = UDim2.new(0, 200, 0, 20)
+    animalDistLabel.Position = UDim2.new(0, 10, 0, 65)
+    animalDistLabel.BackgroundTransparency = 1
+    animalDistLabel.TextColor3 = Color3.new(1, 1, 1)
+    animalDistLabel.Font = Enum.Font.Arcade
+    animalDistLabel.TextScaled = true
+    animalDistLabel.Text = "Distancia animales:"
+
+    local animalDistInput = Instance.new("TextBox", configFrame)
+    animalDistInput.Size = UDim2.new(0, 200, 0, 20)
+    animalDistInput.Position = UDim2.new(0, 10, 0, 90)
+    animalDistInput.BackgroundColor3 = Color3.fromRGB(80, 40, 20)
+    animalDistInput.TextColor3 = Color3.new(1, 1, 1)
+    animalDistInput.Font = Enum.Font.Arcade
+    animalDistInput.TextScaled = true
+    animalDistInput.Text = tostring(Aimbot.maxAnimalDistance or 200)
+    animalDistInput.FocusLost:Connect(function(enter)
+        if enter then
+            local input = tonumber(animalDistInput.Text)
+            if input then
+                Aimbot.maxAnimalDistance = input
+                animalDistInput.Text = tostring(Aimbot.maxAnimalDistance)
+            else
+                animalDistInput.Text = tostring(Aimbot.maxAnimalDistance)
+            end
+        end
+    end)
+
+    local healButton = Instance.new("TextButton", configFrame)
+    healButton.Size = UDim2.new(0, 200, 0, 30)
+    healButton.Position = UDim2.new(0, 10, 0, 120)
+    healButton.BackgroundColor3 = Color3.fromRGB(34, 139, 34)
+    healButton.TextColor3 = Color3.new(1, 1, 1)
+    healButton.Font = Enum.Font.Arcade
+    healButton.TextScaled = true
+    healButton.Text = "FAST HEAL"
+    healButton.MouseButton1Click:Connect(function()
+        if Aimbot.fastHeal then
+            Aimbot.fastHeal()
+        end
     end)
 
     local farmToggle = Instance.new("TextButton", farmFrame)
