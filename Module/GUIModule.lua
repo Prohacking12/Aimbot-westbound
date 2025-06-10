@@ -1,6 +1,6 @@
 local GUI = {}
 
-function GUI.create(Aimbot, Visual, ESP, FastRob, AutoFarm)
+function GUI.create(Aimbot, Visual, ESP, FastRob)
     local Players = game:GetService("Players")
     local LocalPlayer = Players.LocalPlayer
     local screenGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
@@ -33,8 +33,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob, AutoFarm)
     title.Font = Enum.Font.Arcade
     title.TextScaled = true
 
-    -- Añadimos la pestaña "AutoFarm" al array de tabs
-    local tabs = {"Combate", "Visual", "Misc", "AutoFarm"}
+    local tabs = {"Combate", "Visual", "Misc"}
     local tabContainer = Instance.new("Frame", mainFrame)
     tabContainer.Size = UDim2.new(1, 0, 0, 30)
     tabContainer.Position = UDim2.new(0, 0, 0, 30)
@@ -69,13 +68,6 @@ function GUI.create(Aimbot, Visual, ESP, FastRob, AutoFarm)
     miscFrame.Position = UDim2.new(0, 5, 0, 65)
     miscFrame.BackgroundTransparency = 1
     miscFrame.Visible = false
-
-    -- Nuevo frame para AutoFarm
-    local autoFarmFrame = Instance.new("Frame", mainFrame)
-    autoFarmFrame.Size = UDim2.new(1, -10, 1, -70)
-    autoFarmFrame.Position = UDim2.new(0, 5, 0, 65)
-    autoFarmFrame.BackgroundTransparency = 1
-    autoFarmFrame.Visible = false
 
     -- Combate
     local toggleButton = Instance.new("TextButton", combatFrame)
@@ -280,30 +272,11 @@ function GUI.create(Aimbot, Visual, ESP, FastRob, AutoFarm)
         end
     end)
 
-    -- Botón para AutoFarm
-    local autoFarmButton = Instance.new("TextButton", autoFarmFrame)
-    autoFarmButton.Size = UDim2.new(0, 200, 0, 50)
-    autoFarmButton.Position = UDim2.new(0.5, -100, 0.5, -25)
-    autoFarmButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
-    autoFarmButton.TextColor3 = Color3.new(1, 1, 1)
-    autoFarmButton.Font = Enum.Font.Arcade
-    autoFarmButton.TextScaled = true
-    autoFarmButton.Text = "AutoFarm: OFF"
-    autoFarmButton.MouseButton1Click:Connect(function()
-        if AutoFarm.running then
-            AutoFarm.Stop()
-            autoFarmButton.Text = "AutoFarm: OFF"
-        else
-            AutoFarm.Start()
-            autoFarmButton.Text = "AutoFarm: ON"
-        end
-    end)
-
+    
     local function switchTab(tabName)
         combatFrame.Visible = (tabName == "Combate")
         visualFrame.Visible = (tabName == "Visual")
         miscFrame.Visible = (tabName == "Misc")
-        autoFarmFrame.Visible = (tabName == "AutoFarm")
         for name, button in pairs(tabButtons) do
             button.BackgroundColor3 = (name == tabName) and Color3.fromRGB(120, 60, 30) or Color3.fromRGB(80, 40, 20)
         end
