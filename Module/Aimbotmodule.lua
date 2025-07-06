@@ -14,6 +14,7 @@ Aimbot.animalMaxDistance = 90
 Aimbot.lockedTargetPart = nil
 Aimbot.killAuraLoaded = false
 Aimbot.autoHealEnabled = false
+Aimbot.aimAllPlayers = false
 
 function Aimbot.toggleAimbot() Aimbot.aimbotEnabled = not Aimbot.aimbotEnabled end
 function Aimbot.toggleAnimalAimbot() Aimbot.animalAimbotEnabled = not Aimbot.animalAimbotEnabled end
@@ -29,7 +30,10 @@ function Aimbot.toggleLock()
         Aimbot.lockedTargetPart = Aimbot.getClosestEnemy()
     end
 end
-function Aimbot.toggleAutoHeal() Aimbot.autoHealEnabled = not Aimbot.autoHealEnabled end
+function Aimbot.toggleAimAllPlayers()
+    Aimbot.aimAllPlayers = not Aimbot.aimAllPlayers
+    Aimbot.lockedTargetPart = nil
+end
 
 function Aimbot.getTargetPart(model)
     if not model then return nil end
@@ -54,20 +58,22 @@ end
 function Aimbot.getClosestEnemy()
     local closest, shortest = nil, Aimbot.playerMaxDistance
     for _, player in ipairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer and player.Team and player.Team.Name == Aimbot.targetTeamName then
-            local character = player.Character
-            if character and Aimbot.isValidTarget(character) then
-                local part = Aimbot.getTargetPart(character)
-                if part then
-                    local distance = (part.Position - Camera.CFrame.Position).Magnitude
-                    if distance < shortest then
-                        local params = RaycastParams.new()
-                        params.FilterDescendantsInstances = {LocalPlayer.Character}
-                        params.FilterType = Enum.RaycastFilterType.Blacklist
-                        local result = workspace:Raycast(Camera.CFrame.Position, (part.Position - Camera.CFrame.Position).Unit * distance, params)
-                        if not result or result.Instance:IsDescendantOf(character) then
-                            shortest = distance
-                            closest = part
+        if player ~= LocalPlayer then
+            if Aimbot.aimAllPlayers or (player.Team and player.Team.Name == Aimbot.targetTeamName) then
+                local character = player.Character
+                if character and Aimbot.isValidTarget(character) then
+                    local part = Aimbot.getTargetPart(character)
+                    if part then
+                        local distance = (part.Position - Camera.CFrame.Position).Magnitude
+                        if distance < shortest then
+                            local params = RaycastParams.new()
+                            params.FilterDescendantsInstances = {LocalPlayer.Character}
+                            params.FilterType = Enum.RaycastFilterType.Blacklist
+                            local result = workspace:Raycast(Camera.CFrame.Position, (part.Position - Camera.CFrame.Position).Unit * distance, params)
+                            if not result or result.Instance:IsDescendantOf(character) then
+                                shortest = distance
+                                closest = part
+                            end
                         end
                     end
                 end
@@ -75,6 +81,33 @@ function Aimbot.getClosestEnemy()
         end
     end
     return closest
+end
+
+function Aimbot.getAllEnemies()
+    local targets = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            if Aimbot.aimAllPlayers or (player.Team and player.Team.Name == Aimbot.targetTeamName) then
+                local character = player.Character
+                if character and Aimbot.isValidTarget(character) then
+                    local part = Aimbot.getTargetPart(character)
+                    if part then
+                        local distance = (part.Position - Camera.CFrame.Position).Magnitude
+                        if distance <= Aimbot.playerMaxDistance then
+                            local params = RaycastParams.new()
+                            params.FilterDescendantsInstances = {LocalPlayer.Character}
+                            params.FilterType = Enum.RaycastFilterType.Blacklist
+                            local result = workspace:Raycast(Camera.CFrame.Position, (part.Position - Camera.CFrame.Position).Unit * distance, params)
+                            if not result or result.Instance:IsDescendantOf(character) then
+                                table.insert(targets, part)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return targets
 end
 
 function Aimbot.autoHeal()
