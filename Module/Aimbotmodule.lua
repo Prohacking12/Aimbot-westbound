@@ -16,13 +16,27 @@ Aimbot.killAuraLoaded = false
 Aimbot.autoHealEnabled = false
 Aimbot.aimAllPlayers = false
 
-function Aimbot.toggleAimbot() Aimbot.aimbotEnabled = not Aimbot.aimbotEnabled end
-function Aimbot.toggleAnimalAimbot() Aimbot.animalAimbotEnabled = not Aimbot.animalAimbotEnabled end
-function Aimbot.toggleAimPart() Aimbot.aimAtChest = not Aimbot.aimAtChest end
+function Aimbot.toggleAimbot() 
+    Aimbot.aimbotEnabled = not Aimbot.aimbotEnabled 
+end
+
+function Aimbot.toggleAnimalAimbot() 
+    Aimbot.animalAimbotEnabled = not Aimbot.animalAimbotEnabled 
+end
+
+function Aimbot.toggleAimPart() 
+    Aimbot.aimAtChest = not Aimbot.aimAtChest 
+end
+
+function Aimbot.toggleAutoHeal() 
+    Aimbot.autoHealEnabled = not Aimbot.autoHealEnabled 
+end
+
 function Aimbot.toggleTeam()
     Aimbot.targetTeamName = (Aimbot.targetTeamName == "Outlaws") and "Cowboys" or "Outlaws"
     Aimbot.lockedTargetPart = nil
 end
+
 function Aimbot.toggleLock()
     if Aimbot.lockedTargetPart then
         Aimbot.lockedTargetPart = nil
@@ -30,6 +44,7 @@ function Aimbot.toggleLock()
         Aimbot.lockedTargetPart = Aimbot.getClosestEnemy()
     end
 end
+
 function Aimbot.toggleAimAllPlayers()
     Aimbot.aimAllPlayers = not Aimbot.aimAllPlayers
     Aimbot.lockedTargetPart = nil
@@ -128,6 +143,7 @@ function Aimbot.autoHeal()
         end
     end
 end
+
 
 function Aimbot.getClosestAnimal()
     if not Aimbot.animalAimbotEnabled then return nil end
