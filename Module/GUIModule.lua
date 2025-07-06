@@ -17,7 +17,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
     toggleGuiButton.TextScaled = true
 
     local mainFrame = Instance.new("Frame", screenGui)
-    mainFrame.Size = UDim2.new(0, 380, 0, 330) -- altura ajustada para botón extra
+    mainFrame.Size = UDim2.new(0, 380, 0, 330)
     mainFrame.Position = UDim2.new(0.5, -190, 0.5, -165)
     mainFrame.BackgroundColor3 = Color3.fromRGB(40, 20, 10)
     mainFrame.BorderSizePixel = 2
@@ -68,7 +68,7 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
     miscFrame.Position = UDim2.new(0, 5, 0, 65)
     miscFrame.BackgroundTransparency = 1
     miscFrame.Visible = false
-
+    
     local toggleButton = Instance.new("TextButton", combatFrame)
     toggleButton.Size = UDim2.new(0, 160, 0, 30)
     toggleButton.Position = UDim2.new(0, 10, 0, 10)
@@ -171,6 +171,62 @@ function GUI.create(Aimbot, Visual, ESP, FastRob)
         if Aimbot.toggleAutoHeal then
             Aimbot.toggleAutoHeal()
             fastHealButton.Text = "FastHeal: " .. (Aimbot.autoHealEnabled and "ON" or "OFF")
+        end
+    end)
+
+    local fullbrightButton = Instance.new("TextButton", visualFrame)
+    fullbrightButton.Size = UDim2.new(0, 160, 0, 30)
+    fullbrightButton.Position = UDim2.new(0, 10, 0, 10)
+    fullbrightButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
+    fullbrightButton.TextColor3 = Color3.new(1, 1, 1)
+    fullbrightButton.Font = Enum.Font.Arcade
+    fullbrightButton.TextScaled = true
+    fullbrightButton.Text = "Fullbright: OFF"
+    fullbrightButton.MouseButton1Click:Connect(function()
+        Visual.toggleFullbright()
+        fullbrightButton.Text = Visual.fullbrightEnabled and "Fullbright: ON" or "Fullbright: OFF"
+    end)
+
+    local xrayButton = Instance.new("TextButton", visualFrame)
+    xrayButton.Size = UDim2.new(0, 160, 0, 30)
+    xrayButton.Position = UDim2.new(0, 10, 0, 50)
+    xrayButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
+    xrayButton.TextColor3 = Color3.new(1, 1, 1)
+    xrayButton.Font = Enum.Font.Arcade
+    xrayButton.TextScaled = true
+    xrayButton.Text = "X-Ray: OFF"
+    xrayButton.MouseButton1Click:Connect(function()
+        Visual.toggleXray()
+        xrayButton.Text = Visual.xrayEnabled and "X-Ray: ON" or "X-Ray: OFF"
+    end)
+
+    local espButton = Instance.new("TextButton", visualFrame)
+    espButton.Size = UDim2.new(0, 160, 0, 30)
+    espButton.Position = UDim2.new(0, 10, 0, 90)
+    espButton.BackgroundColor3 = Color3.fromRGB(139, 69, 19)
+    espButton.TextColor3 = Color3.new(1, 1, 1)
+    espButton.Font = Enum.Font.Arcade
+    espButton.TextScaled = true
+    espButton.Text = "ESP: OFF"
+    espButton.MouseButton1Click:Connect(function()
+        ESP.toggleESP()
+        espButton.Text = ESP.espEnabled and "ESP: ON" or "ESP: OFF"
+    end)
+    
+    local fastrobButton = Instance.new("TextButton", miscFrame)
+    fastrobButton.Size = UDim2.new(0, 200, 0, 50)
+    fastrobButton.Position = UDim2.new(0, 20, 0, 20)
+    fastrobButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    fastrobButton.TextColor3 = Color3.new(1, 1, 1)
+    fastrobButton.TextSize = 20
+    fastrobButton.Font = Enum.Font.SourceSansBold
+    fastrobButton.Text = "Activar Robo Rápido"
+    fastrobButton.MouseButton1Click:Connect(function()
+        if FastRob.toggle then FastRob.toggle() end
+        if FastRob.Enabled then
+            fastrobButton.Text = "Desactivar Robo Rápido"
+        else
+            fastrobButton.Text = "Activar Robo Rápido"
         end
     end)
 
